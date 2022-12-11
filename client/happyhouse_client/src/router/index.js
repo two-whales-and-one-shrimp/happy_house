@@ -19,12 +19,12 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "map",
+    path: "/map",
     name: "map",
     component: MapView,
   },
   {
-    path: "user",
+    path: "/user",
     component: UserView,
     children: [
       {
@@ -45,7 +45,7 @@ const routes = [
     ],
   },
   {
-    path: "admin",
+    path: "/admin",
     name: "admin",
     component: AdminView,
   },
