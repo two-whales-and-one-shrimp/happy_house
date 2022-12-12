@@ -5,8 +5,8 @@
     <span class="mx-2">
       <v-btn exact to="/map" text x-large class="mr-5"> 지도 </v-btn>
       <span v-if="!isSignIn">
-        <v-btn exact to="/user/sing-in" text x-large class="mr-5">로그인</v-btn>
-        <v-btn exact to="/user/sing-up" text x-large class="mr-5">
+        <v-btn exact to="/user/sign-in" text x-large class="mr-5">로그인</v-btn>
+        <v-btn exact to="/user/sign-up" text x-large class="mr-5">
           회원가입
         </v-btn>
       </span>

@@ -14,38 +14,38 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "",
+    path: "/",
     name: "home",
     component: HomeView,
   },
   {
-    path: "map",
+    path: "/map",
     name: "map",
     component: MapView,
   },
   {
-    path: "user",
+    path: "/user",
     component: UserView,
     children: [
       {
         path: "info",
         name: "userinfo",
-        components: UserInfo,
+        component: UserInfo,
       },
       {
         path: "sign-in",
         name: "signIn",
-        components: UserSignIn,
+        component: UserSignIn,
       },
       {
         path: "sign-up",
         name: "signUp",
-        components: UserSignUp,
+        component: UserSignUp,
       },
     ],
   },
   {
-    path: "admin",
+    path: "/admin",
     name: "admin",
     component: AdminView,
   },
