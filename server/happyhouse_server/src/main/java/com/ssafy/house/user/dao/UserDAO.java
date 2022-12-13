@@ -18,4 +18,6 @@ public interface UserDAO {
   List<UserListDto> findAll();
 
   void deleteUserById(String userId) throws Exception;
+
+  boolean upgradeUser(String userId) throws Exception;
 }
