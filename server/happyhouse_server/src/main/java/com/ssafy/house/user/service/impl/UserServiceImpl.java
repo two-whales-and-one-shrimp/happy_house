@@ -133,5 +133,10 @@ public class UserServiceImpl implements UserService{
   public List<UserListDto> findAll() {
     return userDAO.findAll();
   }
+
+  @Override
+  public void deleteUserById(String userId) throws Exception{
+    userDAO.deleteUserById(userId);
+  }
   
 }

@@ -18,4 +18,6 @@ public interface UserService {
 
   List<UserListDto> findAll();
 
+  void deleteUserById(String userId) throws Exception;
+
 }

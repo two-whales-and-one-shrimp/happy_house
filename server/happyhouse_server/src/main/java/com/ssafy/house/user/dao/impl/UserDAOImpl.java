@@ -55,4 +55,9 @@ public class UserDAOImpl implements UserDAO {
     }
     return resultList;
   }
+
+  @Override
+  public void deleteUserById(String userId) throws Exception{
+    userRepository.deleteById(userId);
+  }
 }
