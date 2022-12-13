@@ -49,6 +49,16 @@ public class UserServiceImpl implements UserService{
   }
 
   @Override
+  public boolean signOut(String userId, String token) {
+    if (jwtProvider.getUserId(token).equals(userId)) {
+      userDAO.updateUserRefreshTokenById(userId, null);
+      return true;
+    }
+
+    return false;
+  }
+
+  @Override
   public boolean signUp(String userId, String userPassword, String userEmail) throws RuntimeException {
     User user = new User();
     user.setUserId(userId);
