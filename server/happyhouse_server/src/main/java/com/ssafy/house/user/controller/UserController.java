@@ -34,12 +34,12 @@ public class UserController {
   }
 
   @PostMapping("/signin")
-  public UserSignInResultDto signIn(@RequestBody Map<String, String> userInfo) {
+  public ResponseEntity<UserSignInResultDto> signIn(@RequestBody Map<String, String> userInfo) {
     UserSignInResultDto userSignInResultDto = userService.signIn(userInfo.get("id"), userInfo.get("password"));
     if (userSignInResultDto != null) {
-      return userSignInResultDto;
+      return new ResponseEntity<>(userSignInResultDto, HttpStatus.OK);
     }
-    return null;
+    return new ResponseEntity<>(userSignInResultDto, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @GetMapping("/{userId}")
