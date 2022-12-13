@@ -2,6 +2,7 @@ package com.ssafy.house.config.security;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
@@ -49,11 +50,13 @@ public class JWTProvider {
   }
 
   public String createRefreshToken(String userId) {
+    Calendar expireDate = Calendar.getInstance();
+    expireDate.add(Calendar.DAY_OF_MONTH, 14);
     Claims claims = Jwts.claims().setSubject(userId);
 
     String token = Jwts.builder()
         .setClaims(claims)
-        .setExpiration(new Date(System.currentTimeMillis() + 1800000))
+        .setExpiration(expireDate.getTime())
         .signWith(SignatureAlgorithm.HS256, secretKey)
         .compact();
 
@@ -83,7 +86,7 @@ public class JWTProvider {
   public boolean validateToken(String token) {
     try {
       Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-      return claims.getBody().getExpiration().before(new Date());
+      return !claims.getBody().getExpiration().before(new Date());
     } catch (JwtException e) {
       return false;
     }
