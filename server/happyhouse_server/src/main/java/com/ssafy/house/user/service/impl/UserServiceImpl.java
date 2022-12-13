@@ -26,6 +26,8 @@ public class UserServiceImpl implements UserService{
       userSignInResultDto.setAccessToken(jwtProvider.createAccessToken(userId, user.isAdmin()));
       userSignInResultDto.setRefreshToken(jwtProvider.createRefreshToken(userId));
       userSignInResultDto.setAdmin(user.isAdmin());
+      // DB에 refreshToken 저장
+      userDAO.updateUserRefreshTokenById(userId, userSignInResultDto.getRefreshToken());
       return userSignInResultDto;
     } else {
       return null;
