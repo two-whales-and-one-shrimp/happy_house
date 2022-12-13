@@ -1,10 +1,13 @@
 package com.ssafy.house.user.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.house.config.security.JWTProvider;
 import com.ssafy.house.user.dao.UserDAO;
+import com.ssafy.house.user.data.dto.UserListDto;
 import com.ssafy.house.user.data.dto.UserSignInResultDto;
 import com.ssafy.house.user.data.entity.User;
 import com.ssafy.house.user.service.UserService;
@@ -33,5 +36,10 @@ public class UserServiceImpl implements UserService{
       return null;
     }
 
+  }
+
+  @Override
+  public List<UserListDto> findAll() {
+    return userDAO.findAll();
   }
 }
