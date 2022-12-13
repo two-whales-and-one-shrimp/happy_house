@@ -8,4 +8,8 @@ public interface UserService {
   UserSignInResultDto signIn(String userId, String userPassword) throws RuntimeException;
 
   long checkId(String userId) throws RuntimeException;
+
+  void checkEmail(String userEmail) throws Exception;
+  
+  boolean checkCode(String userCode);
 }

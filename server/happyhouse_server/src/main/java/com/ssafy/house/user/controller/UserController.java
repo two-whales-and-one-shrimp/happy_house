@@ -47,4 +47,17 @@ public class UserController {
     }
     return false;
   }
+
+  @PostMapping("/email")
+  public void checkEmail(@RequestBody String userEamil) throws Exception {
+    userService.checkEmail(userEamil);
+  }
+
+  @PostMapping("/code")
+  public boolean checkCode(@RequestBody String userCode) {
+    if (userService.checkCode(userCode)) {
+      return true;
+    }
+    return false;
+  }
 }
