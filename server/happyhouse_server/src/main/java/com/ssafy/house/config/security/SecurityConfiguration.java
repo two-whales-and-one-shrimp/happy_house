@@ -27,7 +27,8 @@ public class SecurityConfiguration{
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup").permitAll()
+        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup", "/user/{userId}")
+        .permitAll()
         .anyRequest().hasRole("admin")
         .and()
         .addFilterBefore(new JWTAuthenticatioFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);

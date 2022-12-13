@@ -27,4 +27,9 @@ public class UserDAOImpl implements UserDAO {
     return userRepository.findByUserIdAndUserPassword(userId, userPassword);
   }
 
+  @Override
+  public Long isSameId(String userId) {
+    return userRepository.countByUserId(userId);
+  }
+
 }

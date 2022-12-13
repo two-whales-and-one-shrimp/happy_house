@@ -50,4 +50,9 @@ public class UserServiceImpl implements UserService{
     }
     return false;
   }
+
+  @Override
+  public long checkId(String userId) throws RuntimeException {
+    return userDAO.isSameId(userId);
+  }
 }
