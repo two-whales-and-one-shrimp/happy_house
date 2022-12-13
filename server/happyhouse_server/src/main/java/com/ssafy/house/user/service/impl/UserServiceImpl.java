@@ -1,6 +1,7 @@
 package com.ssafy.house.user.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.house.config.security.JWTProvider;
@@ -16,9 +17,11 @@ public class UserServiceImpl implements UserService{
   private UserDAO userDAO;
   @Autowired
   private JWTProvider jwtProvider;
+  @Autowired
+  private BCryptPasswordEncoder passwordEncoder;
 
   @Override
-  public UserSignInResultDto signIn(String userId, String userPassword) throws RuntimeException{
+  public UserSignInResultDto signIn(String userId, String userPassword) throws RuntimeException {
     User user = userDAO.selectUserByIdAndPassword(userId, userPassword);
     if (user != null) {
       UserSignInResultDto userSignInResultDto = new UserSignInResultDto();
@@ -31,5 +34,20 @@ public class UserServiceImpl implements UserService{
       return null;
     }
 
+  }
+
+  @Override
+  public boolean signUp(String userId, String userPassword, String userEmail) throws RuntimeException {
+    User user = new User();
+    user.setUserId(userId);
+    user.setUserPassword(passwordEncoder.encode(userPassword));
+    user.setUserEmail(userEmail);
+    
+    User savedUser = userDAO.insertUser(user);
+    
+    if (!savedUser.getUserId().isEmpty()) {
+      return true;
+    }
+    return false;
   }
 }

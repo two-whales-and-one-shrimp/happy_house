@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.house.user.data.dto.UserDto;
 import com.ssafy.house.user.data.dto.UserSignInResultDto;
 import com.ssafy.house.user.service.UserService;
 
@@ -21,6 +22,14 @@ public class UserController {
   @Autowired
   public UserController(UserService userService) {
     this.userService = userService;
+  }
+
+  @PostMapping("/signup")
+  public boolean signUp(@RequestBody Map<String, String> userInfo) {
+    if (userService.signUp(userInfo.get("id"), userInfo.get("password"), userInfo.get("email"))) {
+      return true;
+    }
+    return false;
   }
 
   @PostMapping("/signin")

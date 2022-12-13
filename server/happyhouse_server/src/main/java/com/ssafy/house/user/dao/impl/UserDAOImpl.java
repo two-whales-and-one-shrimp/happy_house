@@ -18,7 +18,13 @@ public class UserDAOImpl implements UserDAO {
   }
   
   @Override
+  public User insertUser(User user) {
+    return userRepository.save(user);
+  }
+
+  @Override
   public User selectUserByIdAndPassword(String userId, String userPassword) {
     return userRepository.findByUserIdAndUserPassword(userId, userPassword);
   }
+
 }
