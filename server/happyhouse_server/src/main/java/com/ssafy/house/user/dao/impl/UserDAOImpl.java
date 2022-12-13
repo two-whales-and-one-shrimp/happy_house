@@ -21,4 +21,11 @@ public class UserDAOImpl implements UserDAO {
   public User selectUserByIdAndPassword(String userId, String userPassword) {
     return userRepository.findByUserIdAndUserPassword(userId, userPassword);
   }
+
+  @Override
+  public void updateUserRefreshTokenById(String userId, String refreshToken) {
+    User user = userRepository.getByUserId(userId);
+    user.setRefreshToken(refreshToken);
+    userRepository.save(user);
+  }
 }
