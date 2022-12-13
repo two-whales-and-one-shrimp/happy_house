@@ -27,7 +27,7 @@ public class SecurityConfiguration{
         .and()
         .authorizeRequests()
         .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/test").permitAll()
-        .antMatchers("admin/**").hasRole("admin")
+        .antMatchers("admin/**").hasAuthority("admin")
         .and()
         .addFilterBefore(new JWTAuthenticatioFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
