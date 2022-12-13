@@ -29,7 +29,7 @@ public class SecurityConfiguration{
         .authorizeRequests()
         .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup", "/user/{userId}", "/user/email", "/user/code")
         .permitAll()
-        .anyRequest().hasRole("admin")
+        .antMatchers("admin/**").hasAuthority("admin")
         .and()
         .addFilterBefore(new JWTAuthenticatioFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 

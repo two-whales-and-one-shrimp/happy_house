@@ -1,9 +1,10 @@
 package com.ssafy.house.user.service.impl;
 
-import java.util.Random;
 
+import java.util.Random;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.house.config.security.JWTProvider;
 import com.ssafy.house.user.dao.UserDAO;
+import com.ssafy.house.user.data.dto.UserListDto;
 import com.ssafy.house.user.data.dto.UserSignInResultDto;
 import com.ssafy.house.user.data.entity.User;
 import com.ssafy.house.user.service.UserService;
@@ -37,6 +39,8 @@ public class UserServiceImpl implements UserService{
       userSignInResultDto.setAccessToken(jwtProvider.createAccessToken(userId, user.isAdmin()));
       userSignInResultDto.setRefreshToken(jwtProvider.createRefreshToken(userId));
       userSignInResultDto.setAdmin(user.isAdmin());
+      // DB에 refreshToken 저장
+      userDAO.updateUserRefreshTokenById(userId, userSignInResultDto.getRefreshToken());
       return userSignInResultDto;
     } else {
       return null;
@@ -126,4 +130,8 @@ public class UserServiceImpl implements UserService{
     return key.toString();
   }
 
+  public List<UserListDto> findAll() {
+    return userDAO.findAll();
+  }
+  
 }
