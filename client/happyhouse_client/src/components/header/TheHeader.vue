@@ -20,7 +20,7 @@
 <script>
 import logo from "@/components/header/Logo";
 import avartar from "@/components/header/Avartar";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 const userStore = "userStore";
 
@@ -37,7 +37,16 @@ export default {
     ...mapState(userStore, ["userId"]),
   },
   methods: {
-    signOut() {},
+    ...mapActions(userStore, ["userSignOut"]),
+    async signOut() {
+      if (await this.userSignOut()) {
+        this.$router.push("/").catch((e) => {
+          if (e === "NavigationDuplicated") {
+            this.$router.go();
+          }
+        });
+      }
+    },
   },
 };
 </script>
