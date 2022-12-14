@@ -13,15 +13,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr height="70px" v-for="user in userList" :key="user.id">
+        <tr height="70px" v-for="user in userList" :key="user.userId">
           <td class="text-lg-body-1">
-            <div class="text-center">{{ user.id }}</div>
+            <div class="text-center">{{ user.userId }}</div>
           </td>
           <td class="text-left">
             <v-btn
               color="primary"
               class="text--white float-left text-lg-body-1"
-              v-if="user.isAdmin"
+              v-if="user.admin"
               large
               rounded
             >
@@ -30,9 +30,10 @@
           </td>
           <td>
             <v-btn
-              @click="makeAdmin(user.id)"
+              @click="upgradeUser(user.userId)"
               text
               large
+              :disabled="user.admin"
               class="text-lg-body-1"
             >
               승격
@@ -40,7 +41,7 @@
           </td>
           <td>
             <v-btn
-              @click="deleteUser(user.id)"
+              @click="deleteUser(user.userId)"
               text
               large
               class="text-lg-body-1"
@@ -55,33 +56,49 @@
 </template>
 
 <script>
+import { getUserList, deleteUser, upgradeUserToAdmin } from "@/api/admin.js";
+
 export default {
   data() {
     return {
-      userList: [
-        { id: "testId", isAdmin: true },
-        { id: "userId2", isAdmin: false },
-        { id: "userId3", isAdmin: true },
-        { id: "userId4", isAdmin: false },
-      ],
+      userList: [],
     };
   },
+  created() {
+    getUserList(
+      (list) => {
+        this.userList = [...list];
+      },
+      () => {
+        console.log("error");
+        // eslint-disable-next-line prettier/prettier
+      },
+    );
+  },
   methods: {
-    makeAdmin(userId) {
+    updateUserToAdmin(userId) {
+      const index = this.userList.findIndex((user) => user.userId == userId);
+      this.userList[index].admin = true;
+    },
+    upgradeUser(userId) {
       const select = confirm("관리자로 승격 하시겠습니까?");
       if (select) {
-        const tmpList = [...this.userList];
-        const index = this.userList.findIndex((user) => user.id == userId);
-
-        tmpList[index].isAdmin = true;
-        this.userList = [...tmpList];
+        upgradeUserToAdmin(userId, this.updateUserToAdmin, (error) => {
+          console.log(error);
+        });
       }
+    },
+    deleteUserByList(userId) {
+      const index = this.userList.findIndex((user) => user.userId === userId);
+      console.log(index);
+      this.userList.splice(index, 1);
     },
     deleteUser(userId) {
       const select = confirm("회원을 삭제하시겠습니까?");
       if (select) {
-        const index = this.userList.findIndex((user) => user.id == userId);
-        this.userList.splice(index, 1);
+        deleteUser(userId, this.deleteUserByList, (error) => {
+          console.log(error);
+        });
       }
     },
   },
