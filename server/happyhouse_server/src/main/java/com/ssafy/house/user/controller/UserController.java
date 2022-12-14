@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.house.user.data.dto.UserDto;
 import com.ssafy.house.user.data.dto.UserSignInResultDto;
 import com.ssafy.house.user.service.UserService;
 
@@ -26,11 +27,11 @@ public class UserController {
   }
 
   @PostMapping("/signup")
-  public boolean signUp(@RequestBody Map<String, String> userInfo) {
-    if (userService.signUp(userInfo.get("id"), userInfo.get("password"), userInfo.get("email"))) {
-      return true;
+  public ResponseEntity<?> signUp(@RequestBody UserDto userDto) {
+    if (userService.signUp(userDto)) {
+      return new ResponseEntity<String>("success", HttpStatus.OK);
     }
-    return false;
+    return new ResponseEntity<String>("fail", HttpStatus.OK);
   }
 
   @PostMapping("/signin")
@@ -42,25 +43,26 @@ public class UserController {
     return new ResponseEntity<>(userSignInResultDto, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  @GetMapping("/{userId}")
-  public boolean checkId(@PathVariable String userId) {
+  @GetMapping("/{userid}")
+  public ResponseEntity<?> checkId(@PathVariable("userid") String userId) {
     if (userService.checkId(userId) == 0) {
-      return true;
+      return new ResponseEntity<String>("success", HttpStatus.OK);
     }
-    return false;
+    return new ResponseEntity<String>("fail", HttpStatus.OK);
   }
 
   @PostMapping("/email")
-  public void checkEmail(@RequestBody String userEamil) throws Exception {
+  public ResponseEntity<?> checkEmail(@RequestBody String userEamil) throws Exception {
     userService.checkEmail(userEamil);
+    return new ResponseEntity<String>("success", HttpStatus.OK);
   }
 
   @PostMapping("/code")
-  public boolean checkCode(@RequestBody String userCode) {
+  public ResponseEntity<?> checkCode(@RequestBody String userCode) {
     if (userService.checkCode(userCode)) {
-      return true;
+      return new ResponseEntity<String>("success", HttpStatus.OK);
     }
-    return false;
+    return new ResponseEntity<String>("fail", HttpStatus.OK);
   }
   
   @GetMapping("/test")

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.house.config.security.JWTProvider;
 import com.ssafy.house.user.dao.UserDAO;
+import com.ssafy.house.user.data.dto.UserDto;
 import com.ssafy.house.user.data.dto.UserListDto;
 import com.ssafy.house.user.data.dto.UserSignInResultDto;
 import com.ssafy.house.user.data.entity.User;
@@ -49,11 +50,11 @@ public class UserServiceImpl implements UserService{
   }
 
   @Override
-  public boolean signUp(String userId, String userPassword, String userEmail) throws RuntimeException {
+  public boolean signUp(UserDto userDto) throws RuntimeException {
     User user = new User();
-    user.setUserId(userId);
-    user.setUserPassword(passwordEncoder.encode(userPassword));
-    user.setUserEmail(userEmail);
+    user.setUserId(userDto.getUserId());
+    user.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
+    user.setUserEmail(userDto.getUserEmail());
     
     User savedUser = userDAO.insertUser(user);
     
@@ -68,15 +69,19 @@ public class UserServiceImpl implements UserService{
     return userDAO.isSameId(userId);
   }
 
+  public static String code;
   @Override
   public void checkEmail(String userEmail) throws Exception {
+    code = createKey();
     MimeMessage message = createMessage(userEmail);
     mailSender.send(message);
   }
   
   @Override
   public boolean checkCode(String userCode) {
-    if (code.equals(userCode)) {
+    String newcode = "\"" + code + "\"";
+    System.out.println(newcode);
+    if (newcode.equals(userCode)) {
       return true;
     }
     return false;
@@ -107,8 +112,7 @@ public class UserServiceImpl implements UserService{
     return message;
   }
 
-  public static final String code = createKey();
-    public static String createKey() {
+  public static String createKey() {
     StringBuffer key = new StringBuffer();
     Random random = new Random();
 
