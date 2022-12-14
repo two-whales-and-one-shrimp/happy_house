@@ -148,5 +148,10 @@ public class UserServiceImpl implements UserService{
   public void deleteUserById(String userId) throws Exception{
     userDAO.deleteUserById(userId);
   }
+
+  @Override
+  public boolean upgradeUser(String userId) throws Exception {
+    return userDAO.upgradeUser(userId);
+  }
   
 }

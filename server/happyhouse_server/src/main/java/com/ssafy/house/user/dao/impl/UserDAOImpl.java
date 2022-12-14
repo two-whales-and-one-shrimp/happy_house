@@ -2,6 +2,7 @@ package com.ssafy.house.user.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -59,5 +60,17 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public void deleteUserById(String userId) throws Exception{
     userRepository.deleteById(userId);
+  }
+
+  @Override
+  public boolean upgradeUser(String userId) throws Exception {
+    Optional<User> user = userRepository.findById(userId);
+    if(user.isPresent()){
+      User dto = user.get();
+      dto.setAdmin(true);
+      userRepository.save(dto);
+      return true;
+    }
+    return false;
   }
 }

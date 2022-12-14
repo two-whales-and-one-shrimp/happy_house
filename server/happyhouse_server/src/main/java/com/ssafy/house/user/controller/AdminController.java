@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +35,20 @@ public class AdminController {
     try{
       userService.deleteUserById(userId);
       return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+    }
+    catch(Exception e){
+      return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @PutMapping("/{userId}")
+  public ResponseEntity<?> upgradeUser(@PathVariable String userId){
+    try{
+      boolean result = userService.upgradeUser(userId);
+      if(result)
+        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+      else
+        return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
     }
     catch(Exception e){
       return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
