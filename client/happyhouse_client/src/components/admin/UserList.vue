@@ -30,7 +30,7 @@
           </td>
           <td>
             <v-btn
-              @click="makeAdmin(user.userId)"
+              @click="upgradeUser(user.userId)"
               text
               large
               :disabled="user.admin"
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { getUserList } from "@/api/admin.js";
+import { getUserList, deleteUser, upgradeUserToAdmin } from "@/api/admin.js";
 
 export default {
   data() {
@@ -76,21 +76,29 @@ export default {
     );
   },
   methods: {
-    makeAdmin(userId) {
+    updateUserToAdmin(userId) {
+      const index = this.userList.findIndex((user) => user.userId == userId);
+      this.userList[index].admin = true;
+    },
+    upgradeUser(userId) {
       const select = confirm("관리자로 승격 하시겠습니까?");
       if (select) {
-        const tmpList = [...this.userList];
-        const index = this.userList.findIndex((user) => user.id == userId);
-
-        tmpList[index].isAdmin = true;
-        this.userList = [...tmpList];
+        upgradeUserToAdmin(userId, this.updateUserToAdmin, (error) => {
+          console.log(error);
+        });
       }
+    },
+    deleteUserByList(userId) {
+      const index = this.userList.findIndex((user) => user.userId === userId);
+      console.log(index);
+      this.userList.splice(index, 1);
     },
     deleteUser(userId) {
       const select = confirm("회원을 삭제하시겠습니까?");
       if (select) {
-        const index = this.userList.findIndex((user) => user.id == userId);
-        this.userList.splice(index, 1);
+        deleteUser(userId, this.deleteUserByList, (error) => {
+          console.log(error);
+        });
       }
     },
   },
