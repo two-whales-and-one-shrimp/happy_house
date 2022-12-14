@@ -1,4 +1,4 @@
-import { signIn } from "@/api/user.js";
+import { signIn, signOut } from "@/api/user.js";
 
 const userStore = {
   namespaced: true,
@@ -42,17 +42,17 @@ const userStore = {
       }
     },
 
-    // async userSignOut({ commit }) {
-    //   let response = await signIn(userInfo.id, userInfo.password);
-    //   if (response.status == 200) {
-    //     commit("REMOVE_USER_INFO");
-    //     localStorage.setItem("accessToken", response.data.accessToken);
-    //     localStorage.setItem("refreshToken", response.data.refreshToken);
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // },
+    async userSignOut({ state, commit }) {
+      let response = await signOut(state.userId);
+      if (response.status == 200) {
+        commit("REMOVE_USER_INFO");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
 };
 

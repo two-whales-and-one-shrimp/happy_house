@@ -10,6 +10,8 @@ public interface UserService {
 
   UserSignInResultDto signIn(String userId, String userPassword) throws RuntimeException;
 
+  boolean signOut(String userId, String token);
+
   long checkId(String userId) throws RuntimeException;
 
   void checkEmail(String userEmail) throws Exception;
@@ -18,4 +20,7 @@ public interface UserService {
 
   List<UserListDto> findAll();
 
+  void deleteUserById(String userId) throws Exception;
+
+  boolean upgradeUser(String userId)throws Exception;
 }

@@ -10,4 +10,16 @@ function apiInstance() {
   return instance;
 }
 
-export { apiInstance };
+function apiTokenInstance(token) {
+  console.log(token);
+  const instance = axios.create({
+    baseURL: process.env.VUE_APP_API_BASE_URL,
+    headers: {
+      "X-ACCESS-TOKEN": `${token}`,
+    },
+  });
+  console.log(instance);
+  return instance;
+}
+
+export { apiInstance, apiTokenInstance };

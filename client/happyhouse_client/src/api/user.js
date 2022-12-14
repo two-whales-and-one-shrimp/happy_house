@@ -1,4 +1,4 @@
-import { apiInstance } from ".";
+import { apiInstance, apiTokenInstance } from ".";
 
 const api = apiInstance();
 
@@ -15,4 +15,18 @@ async function signIn(userId, userPassword) {
   return response;
 }
 
-export { signIn };
+async function signOut(userId) {
+  let response;
+  try {
+    response = await apiTokenInstance(localStorage.getItem("accessToken")).get(
+      `/user/signout/${userId}`
+    );
+    console.log(response);
+  } catch (e) {
+    response = e.response;
+    console.log(e.response);
+  }
+  return response;
+}
+
+export { signIn, signOut };
