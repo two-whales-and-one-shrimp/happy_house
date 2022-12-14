@@ -72,7 +72,7 @@ public class JWTProvider {
     
   }
 
-  private String getUserId(String token) {
+  public String getUserId(String token) {
     return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
   }
 

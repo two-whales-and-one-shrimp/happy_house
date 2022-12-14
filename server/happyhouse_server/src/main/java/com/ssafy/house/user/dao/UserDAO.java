@@ -16,4 +16,8 @@ public interface UserDAO {
   void updateUserRefreshTokenById(String userId, String refreshToken);
 
   List<UserListDto> findAll();
+
+  void deleteUserById(String userId) throws Exception;
+
+  boolean upgradeUser(String userId) throws Exception;
 }

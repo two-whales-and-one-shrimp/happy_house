@@ -50,7 +50,17 @@ public class UserServiceImpl implements UserService{
   }
 
   @Override
-  public boolean signUp(UserDto userDto) throws RuntimeException {
+  public boolean signOut(String userId, String token) {
+    if (jwtProvider.getUserId(token).equals(userId)) {
+      userDAO.updateUserRefreshTokenById(userId, null);
+      return true;
+    }
+
+    return false;
+  }
+
+  @Override
+  public boolean signUp(String userId, String userPassword, String userEmail) throws RuntimeException {
     User user = new User();
     user.setUserId(userDto.getUserId());
     user.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
@@ -136,6 +146,16 @@ public class UserServiceImpl implements UserService{
 
   public List<UserListDto> findAll() {
     return userDAO.findAll();
+  }
+
+  @Override
+  public void deleteUserById(String userId) throws Exception{
+    userDAO.deleteUserById(userId);
+  }
+
+  @Override
+  public boolean upgradeUser(String userId) throws Exception {
+    return userDAO.upgradeUser(userId);
   }
   
 }

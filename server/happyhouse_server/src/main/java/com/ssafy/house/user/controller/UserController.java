@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,9 +43,17 @@ public class UserController {
     }
     return new ResponseEntity<>(userSignInResultDto, HttpStatus.INTERNAL_SERVER_ERROR);
   }
+  
+  @GetMapping("/signout/{userId}")
+  public ResponseEntity<?> signOut(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String userId) {
+    if(userService.signOut(userId, token))
+      return new ResponseEntity<>(HttpStatus.OK);
+    else 
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
-  @GetMapping("/{userid}")
-  public ResponseEntity<?> checkId(@PathVariable("userid") String userId) {
+  @GetMapping("/{userId}")
+  public boolean checkId(@PathVariable String userId) {
     if (userService.checkId(userId) == 0) {
       return new ResponseEntity<String>("success", HttpStatus.OK);
     }
