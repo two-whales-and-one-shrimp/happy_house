@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService{
   }
 
   @Override
-  public boolean signUp(String userId, String userPassword, String userEmail) throws RuntimeException {
+  public boolean signUp(UserDto userDto) throws RuntimeException {
     User user = new User();
     user.setUserId(userDto.getUserId());
     user.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
