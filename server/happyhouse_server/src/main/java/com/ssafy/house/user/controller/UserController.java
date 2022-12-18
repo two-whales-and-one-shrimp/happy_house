@@ -3,6 +3,7 @@ package com.ssafy.house.user.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class UserController {
     if (userService.signUp(userDto)) {
       return new ResponseEntity<String>("success", HttpStatus.OK);
     }
-    return new ResponseEntity<String>("fail", HttpStatus.OK);
+    return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @PostMapping("/signin")
@@ -46,18 +47,24 @@ public class UserController {
   
   @GetMapping("/signout/{userId}")
   public ResponseEntity<?> signOut(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String userId) {
-    if(userService.signOut(userId, token))
+    if (userService.signOut(userId, token))
       return new ResponseEntity<>(HttpStatus.OK);
-    else 
+    else
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
+  @DeleteMapping("/{userId}")
+  public ResponseEntity<?> deleteUser(@PathVariable String userId) throws Exception {
+    userService.deleteUserById(userId);
+    return new ResponseEntity<String>("success", HttpStatus.OK);
+  }
+
   @GetMapping("/{userId}")
-  public boolean checkId(@PathVariable String userId) {
+  public ResponseEntity<?> checkId(@PathVariable String userId) {
     if (userService.checkId(userId) == 0) {
       return new ResponseEntity<String>("success", HttpStatus.OK);
     }
-    return new ResponseEntity<String>("fail", HttpStatus.OK);
+    return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @PostMapping("/email")
@@ -71,7 +78,7 @@ public class UserController {
     if (userService.checkCode(userCode)) {
       return new ResponseEntity<String>("success", HttpStatus.OK);
     }
-    return new ResponseEntity<String>("fail", HttpStatus.OK);
+    return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
   }
   
   @GetMapping("/test")

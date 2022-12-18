@@ -49,4 +49,3 @@ async function signOut(userId) {
 }
 
 export { signIn, signUp, checkId, checkEmail, checkCode, signOut };
-
