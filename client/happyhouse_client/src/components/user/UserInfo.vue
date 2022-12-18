@@ -118,7 +118,9 @@ export default {
         emailModify: false,
         emailCertification: false,
       },
-      timerText: "5 : 00",
+      timerText: "",
+      timerTime: 1000 * 60 * 5,
+      timeInterval: null,
     };
   },
   computed: {
@@ -158,24 +160,37 @@ export default {
       //서버에 이메일 인증 번호 요청
       this.certificationTimer();
     },
-    certificationTimer() {
-      this.certificationValidated = true;
-      this.timeOut = false;
+    printTime(time) {
+      const minutes = Math.floor(time / (60 * 1000));
+      const seconds = `${(time % (60 * 1000)) / 1000}`.padStart(2, "0");
 
-      // const time = 1000 * 60 * 5;
-      const time = 1000 * 60 * 5;
+      this.timerText = `${minutes} : ${seconds}`;
+    },
+    certificationTimer() {
+      this.resetTimeOut();
+      this.printTime(this.timerTime);
+
+      let i = 1;
+      this.timeInterval = setInterval(() => {
+        this.printTime(this.timerTime - 1000 * i);
+        i++;
+      }, 1000);
+
       setTimeout(() => {
+        clearInterval(this.timeInterval);
+
         this.certificationValidated = false;
         this.timeOut = true;
         this.timerText = "시간이 초과되었습니다";
-      }, time); //5분
+      }, this.timerTime); //5분
     },
     resetTimeOut() {
-      this.timerText = "5 : 00";
       this.certificationValidated = false;
+      this.timeOut = false;
     },
     closeDialog() {
       this.mode.emailCertification = false;
+      clearInterval(this.timeInterval);
       this.resetTimeOut();
     },
     sendCertificationCode() {
@@ -189,6 +204,13 @@ export default {
   },
   created() {
     this.user.id = this.getUserId;
+  },
+  watch: {
+    "mode.emailCertification"(newValue) {
+      if (!newValue) {
+        this.cancelCertification();
+      }
+    },
   },
 };
 </script>
