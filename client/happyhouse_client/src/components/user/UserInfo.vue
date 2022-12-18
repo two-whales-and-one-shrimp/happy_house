@@ -28,7 +28,7 @@
             v-if="!mode.passwordModify"
             text
             x-large
-            @click="changePasswordModifyMode(true)"
+            @click="changeMode('password', true)"
           >
             수정
           </v-btn>
@@ -50,17 +50,17 @@
             v-if="!mode.emailModify"
             text
             x-large
-            @click="changeEmailModifyMode(true)"
+            @click="changeMode('email', true)"
           >
             수정
           </v-btn>
-          <v-btn v-else @click="certificationTimer" text x-large v-on="on">
+          <v-btn v-else @click="requireCertifiactionCode" text x-large>
             인증 번호 요청
           </v-btn>
           <v-dialog
             transition="dialog-bottom-transition"
             max-width="600"
-            v-model="mode.emailModify"
+            v-model="mode.emailCertification"
           >
             <v-card>
               <v-toolbar color="black" class="title white--text">
@@ -70,36 +70,21 @@
                 <div class="text-md-subtitle-1 mb-3">
                   입력하신 이메일로 인증코드가 발송되었습니다.
                 </div>
-                <div class="text-xl-h4 text-center">5 : 00</div>
+                <div class="text-xl-h4 text-center">{{ this.timerText }}</div>
                 <v-text-field class="px-16" v-model="certificationCode">
                 </v-text-field>
               </v-card-text>
-              <v-card-actions class="justify-end">
+              <v-card-actions class="justify-end pb-5">
                 <v-btn
+                  v-if="!timeOut"
                   x-large
                   color="black"
                   class="black white--text"
-                  @click="
-                    () => {
-                      mode.emailModify = false;
-                      this.sendCertificationCode();
-                    }
-                  "
+                  @click="sendCertificationCode"
                 >
                   인증
                 </v-btn>
-                <v-btn
-                  x-large
-                  text
-                  @click="
-                    () => {
-                      dialog.value = false;
-                      mode.emailModify = false;
-                    }
-                  "
-                >
-                  취소
-                </v-btn>
+                <v-btn x-large text @click="cancelCertification"> 취소 </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -127,11 +112,13 @@ export default {
       },
       certificationCode: "",
       certificationValidated: false,
+      timeOut: false,
       mode: {
         passwordModify: false,
         emailModify: false,
         emailCertification: false,
       },
+      timerText: "5 : 00",
     };
   },
   computed: {
@@ -153,35 +140,51 @@ export default {
         this.$router.push("/");
       }
     },
-    changePasswordModifyMode(value) {
-      this.mode.passwordModify = value;
+    changeMode(type, value) {
+      if (type === "password") {
+        this.mode.passwordModify = value;
+      } else if (type === "email") {
+        this.mode.emailModify = value;
+      } else if (type === "dialog") {
+        this.mode.emailCertification = value;
+      }
     },
     requireChangePassword() {
-      this.changePasswordModifyMode(false);
       //비밀번호 변경 요청
-    },
-    changeEmailModifyMode(value) {
-      this.mode.emailModify = value;
+      this.changeMode("password", false);
     },
     requireCertifiactionCode() {
-      if (this.mode.emailCertification) {
-        //서버에 이메일 인증 번호 요청
-      }
-      this.mode.emailCertification = !this.mode.emailCertification;
-    },
-    sendCertificationCode() {
-      this.mode.emailCertification = false;
-      //이메일 정보 수정 요청
+      this.changeMode("dialog", true);
+      //서버에 이메일 인증 번호 요청
+      this.certificationTimer();
     },
     certificationTimer() {
       this.certificationValidated = true;
+      this.timeOut = false;
 
       // const time = 1000 * 60 * 5;
-      const time = 2000;
+      const time = 1000 * 60 * 5;
       setTimeout(() => {
-        this.mode.emailModify = false;
         this.certificationValidated = false;
+        this.timeOut = true;
+        this.timerText = "시간이 초과되었습니다";
       }, time); //5분
+    },
+    resetTimeOut() {
+      this.timerText = "5 : 00";
+      this.certificationValidated = false;
+    },
+    closeDialog() {
+      this.mode.emailCertification = false;
+      this.resetTimeOut();
+    },
+    sendCertificationCode() {
+      //이메일 정보 수정 요청
+      this.closeDialog();
+    },
+    cancelCertification() {
+      this.closeDialog();
+      this.mode.emailModify = false;
     },
   },
   created() {
