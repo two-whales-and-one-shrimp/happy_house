@@ -102,6 +102,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import { deleteUser } from "@/api/user";
 export default {
   data() {
     return {
@@ -135,9 +136,17 @@ export default {
       const select = confirm("정말 탈퇴하시겠습니까?");
       if (select) {
         //탈퇴
-        this.REMOVE_USER_INFO();
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        deleteUser(
+          this.getUserId,
+          () => {
+            this.REMOVE_USER_INFO();
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+          },
+          (e) => {
+            console.log(e);
+          }
+        );
 
         this.$router.push("/");
       }

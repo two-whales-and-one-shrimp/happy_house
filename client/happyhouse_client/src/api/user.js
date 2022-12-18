@@ -48,4 +48,20 @@ async function signOut(userId) {
   return response;
 }
 
-export { signIn, signUp, checkId, checkEmail, checkCode, signOut };
+async function deleteUser(userId, success, fail) {
+  let response;
+  try {
+    response = await apiTokenInstance(
+      localStorage.getItem("accessToken")
+    ).delete(`/user/${userId}`);
+
+    if (response.status === 200) {
+      success();
+    }
+  } catch (e) {
+    fail(e);
+  }
+  return response;
+}
+
+export { signIn, signUp, checkId, checkEmail, checkCode, signOut, deleteUser };
