@@ -23,5 +23,10 @@ public interface UserService {
 
   void deleteUserById(String userId) throws Exception;
 
-  boolean upgradeUser(String userId)throws Exception;
+  boolean upgradeUser(String userId) throws Exception;
+  
+  void findPassword(UserDto userDto) throws Exception;
+
+  String checkRefreshToken(String refreshToken);
+
 }

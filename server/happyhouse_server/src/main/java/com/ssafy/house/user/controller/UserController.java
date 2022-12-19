@@ -2,6 +2,8 @@ package com.ssafy.house.user.controller;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,8 +51,8 @@ public class UserController {
   public ResponseEntity<?> signOut(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String userId) {
     if (userService.signOut(userId, token))
       return new ResponseEntity<>(HttpStatus.OK);
-    else
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    else 
+      return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @DeleteMapping("/{userId}")
@@ -79,5 +81,23 @@ public class UserController {
       return new ResponseEntity<String>("success", HttpStatus.OK);
     }
     return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @PostMapping("/findpassword")
+  public ResponseEntity<?> updatePassword(@RequestBody UserDto userDto) throws Exception {
+    //임시비밀번호 전송
+    userService.findPassword(userDto);
+    return new ResponseEntity<String>("success", HttpStatus.OK);
+  }
+
+  @GetMapping("/refresh")
+  public ResponseEntity<String> refresh(@RequestHeader("X-REFRESH-TOKEN") String refreshToken) {
+    System.out.println("refresh");
+    String accessToken = userService.checkRefreshToken(refreshToken);
+    if (accessToken != null) {
+      return new ResponseEntity<String>(accessToken, HttpStatus.OK);  
+    } else {
+      return new ResponseEntity<String>("", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

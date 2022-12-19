@@ -5,10 +5,12 @@ import java.util.Random;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.house.config.security.JWTProvider;
@@ -18,6 +20,8 @@ import com.ssafy.house.user.data.dto.UserListDto;
 import com.ssafy.house.user.data.dto.UserSignInResultDto;
 import com.ssafy.house.user.data.entity.User;
 import com.ssafy.house.user.service.UserService;
+
+import io.jsonwebtoken.JwtException;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -80,10 +84,11 @@ public class UserServiceImpl implements UserService{
   }
 
   public static String code;
+  public static String tempPassword;
   @Override
   public void checkEmail(String userEmail) throws Exception {
     code = createKey();
-    MimeMessage message = createMessage(userEmail);
+    MimeMessage message = signUpMessage(userEmail);
     mailSender.send(message);
   }
   
@@ -97,7 +102,32 @@ public class UserServiceImpl implements UserService{
     return false;
   }
 
-  private MimeMessage createMessage(String userEmail) throws Exception {
+  private MimeMessage findPasswordMessage(String userEmail) throws Exception {
+    MimeMessage message = mailSender.createMimeMessage();
+    tempPassword = createKey();
+    message.addRecipients(RecipientType.TO, userEmail);//보내는 대상
+    message.setSubject("HappyHouse 비밀번호 찾기");//제목
+
+    String msgg = "";
+    msgg += "<div style='margin:100px;'>";
+    msgg += "<h1> 안녕하세요 HappyHouse입니다. </h1>";
+    msgg += "<br>";
+    msgg += "<p>아래 비밀번호로 로그인 후 비밀번호를 수정해 주세요<p>";
+    msgg += "<br>";
+    msgg += "<p>감사합니다!<p>";
+    msgg += "<br>";
+    msgg += "<div align='center' style='border:1px solid black; font-family:verdana';>";
+    msgg += "<h3 style='color:blue;'>임시 비밀번호 입니다.</h3>";
+    msgg += "<div style='font-size:130%'>";
+    msgg += "CODE : <strong>";
+    msgg += tempPassword + "</strong><div><br/> ";
+    msgg += "</div>";
+    message.setText(msgg, "utf-8", "html");//내용
+
+    return message;
+  }
+
+  private MimeMessage signUpMessage(String userEmail) throws Exception {
     MimeMessage message = mailSender.createMimeMessage();
 
     message.addRecipients(RecipientType.TO, userEmail);//보내는 대상
@@ -156,6 +186,30 @@ public class UserServiceImpl implements UserService{
   @Override
   public boolean upgradeUser(String userId) throws Exception {
     return userDAO.upgradeUser(userId);
+  }
+
+  @Override
+  public void findPassword(UserDto userDto) throws Exception {
+    //임시 비밀번호 전송
+    MimeMessage message = findPasswordMessage(userDto.getUserEmail());
+    mailSender.send(message);
+    //임시 비밀번호 저장
+    userDAO.updateUserPasswordById(userDto.getUserId(), passwordEncoder.encode(tempPassword));
+  }
+
+  @Override
+  public String checkRefreshToken(String refreshToken) {
+    try{
+      Optional<User> user = userDAO.selectRefreshTokenByUserId(jwtProvider.getUserId(refreshToken));
+      if (user.get().getRefreshToken().equals(refreshToken)) {
+        String accessToken = jwtProvider.createAccessToken(user.get().getUserId(), user.get().isAdmin());
+        return accessToken;
+      } else {
+        return null;
+      }
+    } catch (JwtException e) {
+      return null;
+    }
   }
   
 }
