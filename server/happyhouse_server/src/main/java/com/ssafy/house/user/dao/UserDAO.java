@@ -10,7 +10,7 @@ import com.ssafy.house.user.data.entity.User;
 public interface UserDAO {
   User insertUser(User user);
 
-  User selectUserByIdAndPassword(String userId, String userPassword);
+  User selectUserById(String userId);
 
   Long isSameId(String userId);
   
