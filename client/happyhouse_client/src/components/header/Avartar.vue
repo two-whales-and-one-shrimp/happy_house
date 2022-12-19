@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   props: {
     userId: String,
@@ -38,6 +39,12 @@ export default {
     return {
       isAdmin: true,
     };
+  },
+  created() {
+    this.isAdmin = this.getIsAdmin;
+  },
+  computed: {
+    ...mapGetters("userStore", ["getIsAdmin"]),
   },
   methods: {
     changePage(path) {

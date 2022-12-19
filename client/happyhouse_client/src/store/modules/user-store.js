@@ -11,6 +11,9 @@ const userStore = {
     getUserId: function (state) {
       return state.userId;
     },
+    getIsAdmin: function (state) {
+      return state.isAdmin;
+    },
   },
   mutations: {
     SET_USER_INFO: (state, userInfo) => {
