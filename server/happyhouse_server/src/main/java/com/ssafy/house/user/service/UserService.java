@@ -29,6 +29,8 @@ public interface UserService {
 
   void updateUserPassword(UserDto userDto) throws Exception;
 
+  void updateUserEmail(UserDto userDto) throws Exception;
+
   String checkRefreshToken(String refreshToken);
 
 }

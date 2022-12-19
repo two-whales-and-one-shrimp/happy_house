@@ -90,9 +90,15 @@ public class UserController {
     return new ResponseEntity<String>("success", HttpStatus.OK);
   }
 
-  @PostMapping("/updatePassword")
+  @PostMapping("/update/password")
   public ResponseEntity<?> updateUserPassword(@RequestBody UserDto userDto) throws Exception {
     userService.updateUserPassword(userDto);
+    return new ResponseEntity<String>("success", HttpStatus.OK);
+  }
+
+  @PostMapping("update/email")
+  public ResponseEntity<?> updateUserEmail(@RequestBody UserDto userDto) throws Exception {
+    userService.updateUserEmail(userDto);
     return new ResponseEntity<String>("success", HttpStatus.OK);
   }
 
