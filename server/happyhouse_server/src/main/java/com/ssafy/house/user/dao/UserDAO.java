@@ -22,5 +22,8 @@ public interface UserDAO {
 
   boolean upgradeUser(String userId) throws Exception;
 
+  void updateUserPasswordById(String userId, String userPassword);
+
   Optional<User> selectRefreshTokenByUserId(String userId);
+
 }
