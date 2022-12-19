@@ -47,7 +47,6 @@ async function signOut(userId) {
   return response;
 }
 
-
 async function getNewAccessToken() {
   let response;
   try {
@@ -77,4 +76,13 @@ async function deleteUser(userId, success, fail) {
   return response;
 }
 
-export { signIn, signUp, checkId, checkEmail, checkCode, signOut, deleteUser, getNewAccessToken };
+export {
+  signIn,
+  signUp,
+  checkId,
+  checkEmail,
+  checkCode,
+  signOut,
+  deleteUser,
+  getNewAccessToken,
+};
