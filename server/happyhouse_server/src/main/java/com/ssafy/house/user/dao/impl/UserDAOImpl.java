@@ -28,8 +28,8 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public User selectUserByIdAndPassword(String userId, String userPassword) {
-    return userRepository.findByUserIdAndUserPassword(userId, userPassword);
+  public User selectUserById(String userId) {
+    return userRepository.findByUserId(userId);
   }
 
   @Override

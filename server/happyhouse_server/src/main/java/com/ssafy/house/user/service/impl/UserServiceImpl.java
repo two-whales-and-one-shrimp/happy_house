@@ -33,8 +33,8 @@ public class UserServiceImpl implements UserService{
 
   @Override
   public UserSignInResultDto signIn(String userId, String userPassword) throws RuntimeException {
-    User user = userDAO.selectUserByIdAndPassword(userId, userPassword);
-    if (user != null) {
+    User user = userDAO.selectUserById(userId);
+    if (user != null && passwordEncoder.matches(userPassword, user.getPassword())) {
       UserSignInResultDto userSignInResultDto = new UserSignInResultDto();
       userSignInResultDto.setUserId(userId);
       userSignInResultDto.setAccessToken(jwtProvider.createAccessToken(userId, user.isAdmin()));
