@@ -1,4 +1,4 @@
-import { apiInstance, apiTokenInstance } from ".";
+import { apiInstance, apiTokenInstance, apiRefreshTokenInstance } from ".";
 
 const api = apiInstance();
 
@@ -40,7 +40,6 @@ async function signOut(userId) {
     response = await apiTokenInstance(localStorage.getItem("accessToken")).get(
       `/user/signout/${userId}`
     );
-    console.log(response);
   } catch (e) {
     response = e.response;
     console.log(e.response);
@@ -48,4 +47,34 @@ async function signOut(userId) {
   return response;
 }
 
-export { signIn, signUp, checkId, checkEmail, checkCode, signOut };
+
+async function getNewAccessToken() {
+  let response;
+  try {
+    response = await apiRefreshTokenInstance(
+      localStorage.getItem("accessToken"),
+      localStorage.getItem("refreshToken")
+    ).get(`/user/refresh`);
+  } catch (e) {
+    response = e.response;
+  }
+  return response;
+}
+
+async function deleteUser(userId, success, fail) {
+  let response;
+  try {
+    response = await apiTokenInstance(
+      localStorage.getItem("accessToken")
+    ).delete(`/user/${userId}`);
+
+    if (response.status === 200) {
+      success();
+    }
+  } catch (e) {
+    fail(e);
+  }
+  return response;
+}
+
+export { signIn, signUp, checkId, checkEmail, checkCode, signOut, deleteUser, getNewAccessToken };

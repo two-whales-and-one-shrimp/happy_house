@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -63,7 +63,7 @@ public class JWTProvider {
     return token;
   }
 
-  public Authentication getAuthentication(String token) {
+  public Authentication getAuthentication(String token) throws JwtException {
     UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(token));
     
     return new UsernamePasswordAuthenticationToken(userDetails
@@ -72,23 +72,26 @@ public class JWTProvider {
     
   }
 
-  public String getUserId(String token) {
+  public String getUserId(String token) throws JwtException {
     return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
   }
 
   /*
-   * http 헤더에서 토큰 가져오기
+   * http 헤더에서 access 토큰 가져오기
    */
-  public String resolveToken(HttpServletRequest request) {
+  public String resolveAccessToken(HttpServletRequest request) {
     return request.getHeader("X-ACCESS-TOKEN");
   }
 
-  public boolean validateToken(String token) {
-    try {
-      Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-      return !claims.getBody().getExpiration().before(new Date());
-    } catch (JwtException e) {
-      return false;
-    }
+  /*
+   * http 헤더에서 refresh 토큰 가져오기
+   */
+  public String resolveRefreshToken(HttpServletRequest request) {
+    return request.getHeader("X-REFRESH-TOKEN");
+  }
+
+  public void validateToken(String token) throws ExpiredJwtException, JwtException {
+      Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+      //return !claims.getBody().getExpiration().before(new Date());
   }
 }

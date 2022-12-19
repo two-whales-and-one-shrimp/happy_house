@@ -80,4 +80,10 @@ public class UserDAOImpl implements UserDAO {
     user.setUserPassword(userPassword);
     userRepository.save(user);
   }
+  
+  @Override
+  public Optional<User> selectRefreshTokenByUserId(String userId) {
+    Optional<User> user = userRepository.findById(userId);
+    return user;
+  }
 }

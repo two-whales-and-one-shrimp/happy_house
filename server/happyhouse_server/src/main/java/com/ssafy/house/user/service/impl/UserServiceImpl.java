@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,6 +20,8 @@ import com.ssafy.house.user.data.dto.UserListDto;
 import com.ssafy.house.user.data.dto.UserSignInResultDto;
 import com.ssafy.house.user.data.entity.User;
 import com.ssafy.house.user.service.UserService;
+
+import io.jsonwebtoken.JwtException;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -191,7 +194,22 @@ public class UserServiceImpl implements UserService{
     MimeMessage message = findPasswordMessage(userDto.getUserEmail());
     mailSender.send(message);
     //임시 비밀번호 저장
-userDAO.updateUserPasswordById(userDto.getUserId(), passwordEncoder.encode(tempPassword));
+    userDAO.updateUserPasswordById(userDto.getUserId(), passwordEncoder.encode(tempPassword));
+  }
+
+  @Override
+  public String checkRefreshToken(String refreshToken) {
+    try{
+      Optional<User> user = userDAO.selectRefreshTokenByUserId(jwtProvider.getUserId(refreshToken));
+      if (user.get().getRefreshToken().equals(refreshToken)) {
+        String accessToken = jwtProvider.createAccessToken(user.get().getUserId(), user.get().isAdmin());
+        return accessToken;
+      } else {
+        return null;
+      }
+    } catch (JwtException e) {
+      return null;
+    }
   }
   
 }
