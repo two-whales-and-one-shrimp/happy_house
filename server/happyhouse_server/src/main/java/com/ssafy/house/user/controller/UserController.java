@@ -80,9 +80,4 @@ public class UserController {
     }
     return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
   }
-  
-  @GetMapping("/test")
-  public ResponseEntity<String> test() {
-    return new ResponseEntity<String>("test", HttpStatus.OK);
-  }
 }
