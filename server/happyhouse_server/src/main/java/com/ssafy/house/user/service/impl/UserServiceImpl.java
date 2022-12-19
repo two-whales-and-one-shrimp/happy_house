@@ -211,5 +211,10 @@ public class UserServiceImpl implements UserService{
       return null;
     }
   }
+
+  @Override
+  public void updateUserPassword(UserDto userDto) throws Exception {
+    userDAO.updateUserPasswordById(userDto.getUserId(), userDto.getUserPassword());
+  }
   
 }
