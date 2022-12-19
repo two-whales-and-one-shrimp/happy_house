@@ -11,15 +11,24 @@ function apiInstance() {
 }
 
 function apiTokenInstance(token) {
-  console.log(token);
   const instance = axios.create({
     baseURL: process.env.VUE_APP_API_BASE_URL,
     headers: {
       "X-ACCESS-TOKEN": `${token}`,
     },
   });
-  console.log(instance);
   return instance;
 }
 
-export { apiInstance, apiTokenInstance };
+function apiRefreshTokenInstance(atoken, rtoken) {
+  const instance = axios.create({
+    baseURL: process.env.VUE_APP_API_BASE_URL,
+    headers: {
+      "X-ACCESS-TOKEN": `${atoken}`,
+      "X-REFRESH-TOKEN": `${rtoken}`,
+    },
+  });
+  return instance;
+}
+
+export { apiInstance, apiTokenInstance, apiRefreshTokenInstance };

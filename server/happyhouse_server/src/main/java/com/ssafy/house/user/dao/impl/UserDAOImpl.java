@@ -73,4 +73,11 @@ public class UserDAOImpl implements UserDAO {
     }
     return false;
   }
+
+  @Override
+  public Optional<User> selectRefreshTokenByUserId(String userId) {
+    Optional<User> user = userRepository.findById(userId);
+    return user;
+    
+  }
 }
