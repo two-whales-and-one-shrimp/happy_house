@@ -1,5 +1,6 @@
-import { signIn, signOut } from "@/api/user.js";
-
+import { signIn, signOut, getNewAccessToken } from "@/api/user.js";
+import store from "..";
+import router from "@/router/index.js";
 const userStore = {
   namespaced: true,
   state: {
@@ -49,8 +50,31 @@ const userStore = {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         return true;
+      } else if (response.status == 401) {
+        console.log("401");
+        await store.dispatch("userStore/refreshToken");
+        let response = await signOut(state.userId);
+        if (response.status == 200) {
+          commit("REMOVE_USER_INFO");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
+
+    async refreshToken({ commit }) {
+      console.log("refresh");
+      let response = await getNewAccessToken();
+      if (response.status == 200) {
+        localStorage.setItem("accessToken", response.data);
       } else {
-        return false;
+        commit("REMOVE_USER_INFO");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        router.push("/user/sign-in");
       }
     },
   },
