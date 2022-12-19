@@ -81,6 +81,13 @@ public class UserController {
     return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
   }
   
+  @PostMapping("/findpassword")
+  public ResponseEntity<?> updatePassword(@RequestBody UserDto userDto) throws Exception {
+    //임시비밀번호 전송
+    userService.findPassword(userDto);
+    return new ResponseEntity<String>("success", HttpStatus.OK);
+  }
+
   @GetMapping("/test")
   public ResponseEntity<String> test() {
     return new ResponseEntity<String>("test", HttpStatus.OK);

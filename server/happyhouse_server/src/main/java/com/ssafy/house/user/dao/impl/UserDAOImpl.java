@@ -73,4 +73,11 @@ public class UserDAOImpl implements UserDAO {
     }
     return false;
   }
+
+  @Override
+  public void updateUserPasswordById(String userId, String userPassword) {
+    User user = userRepository.getByUserId(userId);
+    user.setUserPassword(userPassword);
+    userRepository.save(user);
+  }
 }

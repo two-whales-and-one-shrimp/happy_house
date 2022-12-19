@@ -20,4 +20,6 @@ public interface UserDAO {
   void deleteUserById(String userId) throws Exception;
 
   boolean upgradeUser(String userId) throws Exception;
+
+  void updateUserPasswordById(String userId, String userPassword);
 }

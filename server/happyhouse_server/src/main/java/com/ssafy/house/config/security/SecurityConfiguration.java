@@ -27,7 +27,7 @@ public class SecurityConfiguration{
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup", "/user/{userId}", "/user/email", "/user/code")
+        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup", "/user/{userId}", "/user/email", "/user/code", "user/findpassword")
         .permitAll()
         .antMatchers("admin/**").hasAuthority("admin")
         .and()
