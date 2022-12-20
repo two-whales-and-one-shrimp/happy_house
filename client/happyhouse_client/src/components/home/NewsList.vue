@@ -13,29 +13,19 @@
 </template>
 
 <script>
+import { getNews } from "@/api/news.js";
+
 export default {
   name: "NewsList",
   data() {
     return {
-      newsList: [
-        {
-          imgSrc: "https://via.placeholder.com/150",
-          title: "title1",
-        },
-        {
-          imgSrc: "https://via.placeholder.com/150",
-          title: "title2",
-        },
-        {
-          imgSrc: "https://via.placeholder.com/150",
-          title: "title3",
-        },
-        {
-          imgSrc: "https://via.placeholder.com/150",
-          title: "title4",
-        },
-      ],
+      newsList: [],
     };
+  },
+
+  async created() {
+    this.newsList = await getNews();
+    console.log(this.newsList);
   },
 };
 </script>
