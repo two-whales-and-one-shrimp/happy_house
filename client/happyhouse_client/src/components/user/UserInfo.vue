@@ -20,7 +20,11 @@
           <span class="title">비밀번호</span>
         </v-col>
         <v-col class="d-flex flex-row align-left">
-          <v-text-field v-if="mode.passwordModify" class="title">
+          <v-text-field
+            v-if="mode.passwordModify"
+            class="title"
+            v-model="user.password"
+          >
           </v-text-field>
         </v-col>
         <v-col class="d-flex justify-end flex-row align-center" cols="3">
@@ -102,7 +106,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { deleteUser } from "@/api/user";
+import { deleteUser, updateUserPassword } from "@/api/user";
 export default {
   data() {
     return {
@@ -160,8 +164,21 @@ export default {
         this.mode.emailCertification = value;
       }
     },
+    showAlert(message) {
+      alert(message);
+    },
     requireChangePassword() {
       //비밀번호 변경 요청
+      updateUserPassword(
+        this.getUserId,
+        this.user.password,
+        () => {
+          this.showAlert("변경 완료되었습니다");
+        },
+        () => {
+          this.showAlert("서버 오류로 요청하신 작업을 완료할 수 없습니다.");
+        }
+      );
       this.changeMode("password", false);
     },
     requireCertifiactionCode() {

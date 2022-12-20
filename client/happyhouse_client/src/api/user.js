@@ -76,6 +76,23 @@ async function deleteUser(userId, success, fail) {
   return response;
 }
 
+async function updateUserPassword(userId, userPassword, success, fail) {
+  try {
+    const response = await apiTokenInstance(
+      localStorage.getItem("accessToken")
+    ).post("/user/update/password", {
+      userId: userId,
+      userPassword: userPassword,
+    });
+    if (response.status === 200) {
+      success();
+    }
+  } catch (e) {
+    console.log(e);
+    fail();
+  }
+}
+
 export {
   signIn,
   signUp,
@@ -85,4 +102,5 @@ export {
   signOut,
   deleteUser,
   getNewAccessToken,
+  updateUserPassword,
 };
