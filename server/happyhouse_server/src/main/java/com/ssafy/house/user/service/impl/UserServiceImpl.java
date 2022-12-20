@@ -211,5 +211,15 @@ public class UserServiceImpl implements UserService{
       return null;
     }
   }
+
+  @Override
+  public void updateUserPassword(UserDto userDto) throws Exception {
+    userDAO.updateUserPasswordById(userDto.getUserId(), passwordEncoder.encode(userDto.getUserPassword()));
+  }
+
+  @Override
+  public void updateUserEmail(UserDto userDto) throws Exception {
+    userDAO.updateUserEmailById(userDto.getUserId(), userDto.getUserEmail());
+  }
   
 }

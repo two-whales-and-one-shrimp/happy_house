@@ -84,9 +84,21 @@ public class UserController {
   }
 
   @PostMapping("/findpassword")
-  public ResponseEntity<?> updatePassword(@RequestBody UserDto userDto) throws Exception {
+  public ResponseEntity<?> findPassword(@RequestBody UserDto userDto) throws Exception {
     //임시비밀번호 전송
     userService.findPassword(userDto);
+    return new ResponseEntity<String>("success", HttpStatus.OK);
+  }
+
+  @PostMapping("/update/password")
+  public ResponseEntity<?> updateUserPassword(@RequestBody UserDto userDto) throws Exception {
+    userService.updateUserPassword(userDto);
+    return new ResponseEntity<String>("success", HttpStatus.OK);
+  }
+
+  @PostMapping("update/email")
+  public ResponseEntity<?> updateUserEmail(@RequestBody UserDto userDto) throws Exception {
+    userService.updateUserEmail(userDto);
     return new ResponseEntity<String>("success", HttpStatus.OK);
   }
 

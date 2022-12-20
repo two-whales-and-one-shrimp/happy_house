@@ -86,4 +86,11 @@ public class UserDAOImpl implements UserDAO {
     Optional<User> user = userRepository.findById(userId);
     return user;
   }
+
+  @Override
+  public void updateUserEmailById(String userId, String userEmail) {
+    User user = userRepository.getByUserId(userId);
+    user.setUserEmail(userEmail);
+    userRepository.save(user);
+  }
 }

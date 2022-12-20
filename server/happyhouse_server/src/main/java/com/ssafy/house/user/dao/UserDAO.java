@@ -24,6 +24,8 @@ public interface UserDAO {
 
   void updateUserPasswordById(String userId, String userPassword);
 
+  void updateUserEmailById(String userId, String userEmail);
+
   Optional<User> selectRefreshTokenByUserId(String userId);
 
 }
