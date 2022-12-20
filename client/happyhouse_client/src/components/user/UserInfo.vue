@@ -24,6 +24,7 @@
             v-if="mode.passwordModify"
             class="title"
             v-model="user.password"
+            type="password"
           >
           </v-text-field>
         </v-col>
