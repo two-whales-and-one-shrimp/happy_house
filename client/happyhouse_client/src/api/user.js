@@ -93,6 +93,22 @@ async function updateUserPassword(userId, userPassword, success, fail) {
   }
 }
 
+async function updateUserEmail(userId, userEmail, success, fail) {
+  try {
+    const response = await apiTokenInstance(
+      localStorage.getItem("accessToken")
+    ).post("/user/update/email", {
+      userId: userId,
+      userEmail: userEmail,
+    });
+    if (response.status === 200) {
+      success(response);
+    }
+  } catch (e) {
+    fail(e);
+  }
+}
+
 export {
   signIn,
   signUp,
@@ -103,4 +119,5 @@ export {
   deleteUser,
   getNewAccessToken,
   updateUserPassword,
+  updateUserEmail,
 };
