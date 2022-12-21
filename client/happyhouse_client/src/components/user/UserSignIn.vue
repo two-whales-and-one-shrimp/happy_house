@@ -27,6 +27,7 @@
       single-line
       outlined
       v-model="password"
+      type="password"
     ></v-text-field>
     <v-divider />
     <v-row class="float-right pb-3">

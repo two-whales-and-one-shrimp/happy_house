@@ -20,7 +20,12 @@
           <span class="title">비밀번호</span>
         </v-col>
         <v-col class="d-flex flex-row align-left">
-          <v-text-field v-if="mode.passwordModify" class="title">
+          <v-text-field
+            v-if="mode.passwordModify"
+            class="title"
+            v-model="user.password"
+            type="password"
+          >
           </v-text-field>
         </v-col>
         <v-col class="d-flex justify-end flex-row align-center" cols="3">
@@ -42,7 +47,12 @@
           <span class="title">이메일</span>
         </v-col>
         <v-col class="d-flex flex-row align-left">
-          <v-text-field v-if="mode.emailModify" class="title"> </v-text-field>
+          <v-text-field
+            v-model="user.email"
+            v-if="mode.emailModify"
+            class="title"
+          >
+          </v-text-field>
           <span v-else class="title">{{ user.email }}</span>
         </v-col>
         <v-col class="d-flex justify-end flex-row align-center" cols="3">
@@ -102,7 +112,13 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { deleteUser } from "@/api/user";
+import {
+  deleteUser,
+  updateUserPassword,
+  checkEmail,
+  checkCode,
+  updateUserEmail,
+} from "@/api/user";
 export default {
   data() {
     return {
@@ -160,14 +176,28 @@ export default {
         this.mode.emailCertification = value;
       }
     },
+    showAlert(message) {
+      alert(message);
+    },
     requireChangePassword() {
       //비밀번호 변경 요청
+      updateUserPassword(
+        this.getUserId,
+        this.user.password,
+        () => {
+          this.showAlert("변경 완료되었습니다");
+        },
+        () => {
+          this.showAlert("서버 오류로 요청하신 작업을 완료할 수 없습니다.");
+        }
+      );
       this.changeMode("password", false);
     },
     requireCertifiactionCode() {
       this.changeMode("dialog", true);
-      //서버에 이메일 인증 번호 요청
       this.certificationTimer();
+      //서버에 이메일 인증 번호 요청
+      checkEmail(this.user.email);
     },
     printTime(time) {
       const minutes = Math.floor(time / (60 * 1000));
@@ -202,9 +232,33 @@ export default {
       clearInterval(this.timeInterval);
       this.resetTimeOut();
     },
+    printError(error) {
+      console.log(error);
+    },
     sendCertificationCode() {
-      //이메일 정보 수정 요청
-      this.closeDialog();
+      //인증 번호 확인 요청
+      checkCode(
+        this.certificationCode,
+        () => {
+          //이메일 정보 수정 요청
+          updateUserEmail(
+            this.getUserId,
+            this.user.email,
+            (response) => {
+              if (response.status === 200) {
+                this.closeDialog();
+                this.showAlert("수정 완료되었습니다");
+              }
+            },
+            () => {
+              this.printError("error");
+            }
+          );
+        },
+        () => {
+          this.printError("error");
+        }
+      );
     },
     cancelCertification() {
       this.closeDialog();
