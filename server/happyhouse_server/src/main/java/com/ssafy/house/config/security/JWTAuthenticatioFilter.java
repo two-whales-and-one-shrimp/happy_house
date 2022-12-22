@@ -25,7 +25,6 @@ public class JWTAuthenticatioFilter extends OncePerRequestFilter{
       throws ServletException, IOException {
     String accessToken = jwtProvider.resolveAccessToken(request);
     String refreshToken = jwtProvider.resolveRefreshToken(request);
-    System.out.println(refreshToken);
     if (accessToken != null) {
       try {
         jwtProvider.validateToken(accessToken);
