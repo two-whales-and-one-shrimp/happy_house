@@ -3,6 +3,7 @@ package com.ssafy.house.config.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,10 +28,11 @@ public class SecurityConfiguration{
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup", "/user/{userId}", "/user/email", "/user/code", "user/refresh", "user/findpassword", "user/update/*")
+        .antMatchers(HttpMethod.OPTIONS).permitAll() // 브라우저가 보낸 preflight 요청 해결
+        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup", "/user/{userId}", "/user/email", "/user/code", "/user/refresh", "/user/findpassword", "/user/update/*")
         .permitAll()
-        .antMatchers("admin/**", "user/test").hasAuthority("admin")
-        .antMatchers("user/signout/{userId}").hasAnyAuthority("admin", "user")
+        .antMatchers("/admin/**").hasRole("admin")
+        .antMatchers("/user/signout/{userId}").hasAnyRole("admin", "user")
         .and()
         .addFilterBefore(new JWTAuthenticatioFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(new JWTExceptionFilter(), JWTAuthenticatioFilter.class);
