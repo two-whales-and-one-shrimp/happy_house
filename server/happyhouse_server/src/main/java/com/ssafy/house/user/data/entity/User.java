@@ -64,9 +64,9 @@ public class User implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<String> roles = new ArrayList<>();
     if (isAdmin()) {
-      roles.add("admin");
+      roles.add("ROLE_admin");
     } else {
-      roles.add("user");
+      roles.add("ROLE_user");
     }
     return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
   }

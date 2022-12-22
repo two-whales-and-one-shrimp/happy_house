@@ -10,11 +10,12 @@ function apiInstance() {
   return instance;
 }
 
-function apiTokenInstance(token) {
+function apiTokenInstance() {
   const instance = axios.create({
     baseURL: process.env.VUE_APP_API_BASE_URL,
     headers: {
-      "X-ACCESS-TOKEN": `${token}`,
+      "Content-Type": "application/json;charset=utf-8",
+      "X-ACCESS-TOKEN": `${localStorage.getItem("accessToken")}`,
     },
   });
   return instance;
@@ -24,6 +25,8 @@ function apiRefreshTokenInstance(atoken, rtoken) {
   const instance = axios.create({
     baseURL: process.env.VUE_APP_API_BASE_URL,
     headers: {
+      Origin: "http://localhost:8080",
+      "Content-Type": "application/json;charset=utf-8",
       "X-ACCESS-TOKEN": `${atoken}`,
       "X-REFRESH-TOKEN": `${rtoken}`,
     },
