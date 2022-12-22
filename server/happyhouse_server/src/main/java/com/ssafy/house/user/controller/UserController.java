@@ -75,8 +75,10 @@ public class UserController {
 
   @PostMapping("/code")
   public ResponseEntity<?> checkCode(@RequestBody String userCode) {
-    if (userService.checkCode(userCode)) {
-      return new ResponseEntity<String>("success", HttpStatus.OK);
+    String value = null;
+    value = userService.checkCode(userCode);
+    if (value != null) {
+      return new ResponseEntity<String>(value, HttpStatus.OK);
     }
     return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
   }

@@ -1,4 +1,4 @@
-package com.ssafy.house.config.util;
+package com.ssafy.house.config;
 
 import java.util.Properties;
 

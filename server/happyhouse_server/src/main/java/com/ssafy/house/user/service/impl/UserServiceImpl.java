@@ -2,8 +2,6 @@ package com.ssafy.house.user.service.impl;
 
 
 import java.util.Random;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMessage.RecipientType;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +27,8 @@ public class UserServiceImpl implements UserService{
   private UserDAO userDAO;
   @Autowired
   private JWTProvider jwtProvider;
+  @Autowired
+  private EmailUtil emailUtil;
   @Autowired
   private BCryptPasswordEncoder passwordEncoder;
   @Autowired
@@ -82,95 +82,18 @@ public class UserServiceImpl implements UserService{
     return userDAO.isSameId(userId);
   }
 
-  public static String code;
-  public static String tempPassword;
+  
   @Override
   public void checkEmail(String userEmail) throws Exception {
-    code = createKey();
-    MimeMessage message = signUpMessage(userEmail);
-    mailSender.send(message);
+    Random random = new Random();
+    String code = String.valueOf(random.nextInt(888888) + 111111);
+
+    emailUtil.checkEmailMessage(userEmail, code);
   }
   
   @Override
-  public boolean checkCode(String userCode) {
-    String newcode = "\"" + code + "\"";
-    System.out.println(newcode);
-    if (newcode.equals(userCode)) {
-      return true;
-    }
-    return false;
-  }
-
-  private MimeMessage findPasswordMessage(String userEmail) throws Exception {
-    MimeMessage message = mailSender.createMimeMessage();
-    tempPassword = createKey();
-    message.addRecipients(RecipientType.TO, userEmail);//보내는 대상
-    message.setSubject("HappyHouse 비밀번호 찾기");//제목
-
-    String msgg = "";
-    msgg += "<div style='margin:100px;'>";
-    msgg += "<h1> 안녕하세요 HappyHouse입니다. </h1>";
-    msgg += "<br>";
-    msgg += "<p>아래 비밀번호로 로그인 후 비밀번호를 수정해 주세요<p>";
-    msgg += "<br>";
-    msgg += "<p>감사합니다!<p>";
-    msgg += "<br>";
-    msgg += "<div align='center' style='border:1px solid black; font-family:verdana';>";
-    msgg += "<h3 style='color:blue;'>임시 비밀번호 입니다.</h3>";
-    msgg += "<div style='font-size:130%'>";
-    msgg += "CODE : <strong>";
-    msgg += tempPassword + "</strong><div><br/> ";
-    msgg += "</div>";
-    message.setText(msgg, "utf-8", "html");//내용
-
-    return message;
-  }
-
-  private MimeMessage signUpMessage(String userEmail) throws Exception {
-    MimeMessage message = mailSender.createMimeMessage();
-
-    message.addRecipients(RecipientType.TO, userEmail);//보내는 대상
-    message.setSubject("HappyHouse 회원가입 이메일 인증");//제목
-
-    String msgg = "";
-    msgg += "<div style='margin:100px;'>";
-    msgg += "<h1> 안녕하세요 HappyHouse입니다. </h1>";
-    msgg += "<br>";
-    msgg += "<p>아래 코드를 회원가입 창으로 돌아가 입력해주세요<p>";
-    msgg += "<br>";
-    msgg += "<p>감사합니다!<p>";
-    msgg += "<br>";
-    msgg += "<div align='center' style='border:1px solid black; font-family:verdana';>";
-    msgg += "<h3 style='color:blue;'>회원가입 인증 코드입니다.</h3>";
-    msgg += "<div style='font-size:130%'>";
-    msgg += "CODE : <strong>";
-    msgg += code + "</strong><div><br/> ";
-    msgg += "</div>";
-    message.setText(msgg, "utf-8", "html");//내용
-
-    return message;
-  }
-
-  public static String createKey() {
-    StringBuffer key = new StringBuffer();
-    Random random = new Random();
-
-    for (int i = 0; i < 8; i++) { // 인증코드 8자리
-      int index = random.nextInt(2);
-
-      switch (index) {
-        case 0:
-          key.append((char) ((int) (random.nextInt(26)) + 97));
-          //  a~z  (ex. 1+97=98 => (char)98 = 'b')
-          break;
-        case 1:
-          key.append((random.nextInt(10)));
-          // 0~9
-          break;
-      }
-    }
-
-    return key.toString();
+  public String checkCode(String userCode) {
+    return emailUtil.getCode(userCode);
   }
 
   public List<UserListDto> findAll() {
@@ -189,9 +112,25 @@ public class UserServiceImpl implements UserService{
 
   @Override
   public void findPassword(UserDto userDto) throws Exception {
+    Random random = new Random();
+    StringBuffer key = new StringBuffer();
+
+    for (int i = 0; i < 8; i++) {
+      int index = random.nextInt(2);
+
+      switch (index) {
+        case 0:
+          key.append((char) ((int) (random.nextInt(26)) + 97));
+          break;
+        case 1:
+          key.append((random.nextInt(10)));
+          break;
+      }
+    }
+
+    String tempPassword = key.toString();
     //임시 비밀번호 전송
-    MimeMessage message = findPasswordMessage(userDto.getUserEmail());
-    mailSender.send(message);
+    emailUtil.findPasswordMessage(userDto.getUserEmail(), tempPassword);
     //임시 비밀번호 저장
     userDAO.updateUserPasswordById(userDto.getUserId(), passwordEncoder.encode(tempPassword));
   }
