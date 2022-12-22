@@ -1,10 +1,8 @@
 import { apiTokenInstance } from "./index.js";
 
-const apiToken = apiTokenInstance();
-
 async function getUserList(success, fail) {
   try {
-    const response = await apiToken.get("/admin");
+    const response = await apiTokenInstance().get("/admin");
     const list = await response.data;
     if (list) {
       success(list);
@@ -17,7 +15,7 @@ async function getUserList(success, fail) {
 
 async function deleteUser(userId, success, fail) {
   try {
-    const response = await apiToken.delete(`/admin/${userId}`);
+    const response = await apiTokenInstance().delete(`/admin/${userId}`);
     if (response.status == 200) {
       success(userId);
     } else throw Error;
@@ -28,7 +26,7 @@ async function deleteUser(userId, success, fail) {
 
 async function upgradeUserToAdmin(userId, success, fail) {
   try {
-    const response = await apiToken.put(`/admin/${userId}`);
+    const response = await apiTokenInstance().put(`/admin/${userId}`);
     if (response.status == 200) {
       success(userId);
     } else throw Error;

@@ -37,9 +37,7 @@ async function checkCode(userCode, success, fail) {
 async function signOut(userId) {
   let response;
   try {
-    response = await apiTokenInstance(localStorage.getItem("accessToken")).get(
-      `/user/signout/${userId}`
-    );
+    response = await apiTokenInstance().get(`/user/signout/${userId}`);
   } catch (e) {
     response = e.response;
     console.log(e.response);
@@ -63,9 +61,7 @@ async function getNewAccessToken() {
 async function deleteUser(userId, success, fail) {
   let response;
   try {
-    response = await apiTokenInstance(
-      localStorage.getItem("accessToken")
-    ).delete(`/user/${userId}`);
+    response = await apiTokenInstance().delete(`/user/${userId}`);
 
     if (response.status === 200) {
       success();
