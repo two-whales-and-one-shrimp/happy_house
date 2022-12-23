@@ -17,7 +17,7 @@ public interface UserService {
 
   void checkEmail(String userEmail) throws Exception;
   
-  boolean checkCode(String userCode);
+  String checkCode(String userCode);
 
   List<UserListDto> findAll();
 
