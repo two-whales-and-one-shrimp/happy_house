@@ -36,7 +36,7 @@ const userStore = {
       if (response.status == 200) {
         commit("SET_USER_INFO", {
           id: response.data.userId,
-          isAdmin: response.data.isAdmin,
+          isAdmin: response.data.admin,
         });
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
