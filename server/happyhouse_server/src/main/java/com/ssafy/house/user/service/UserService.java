@@ -33,4 +33,6 @@ public interface UserService {
 
   String checkRefreshToken(String refreshToken);
 
+  UserDto getUserInfo(String userId);
+
 }

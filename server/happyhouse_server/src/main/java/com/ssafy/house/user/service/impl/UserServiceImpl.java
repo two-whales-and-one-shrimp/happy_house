@@ -159,5 +159,19 @@ public class UserServiceImpl implements UserService{
   public void updateUserEmail(UserDto userDto) throws Exception {
     userDAO.updateUserEmailById(userDto.getUserId(), userDto.getUserEmail());
   }
+
+  @Override
+  public UserDto getUserInfo(String userId) {
+    User user = userDAO.selectUserById(userId);
+    if (user != null) {
+      UserDto userDto = new UserDto();
+      userDto.setUserId(userId);
+      userDto.setUserPassword(user.getPassword());
+      userDto.setUserEmail(user.getUserEmail());
+      return userDto;
+    } else {
+      return null;
+    }
+  }
   
 }
