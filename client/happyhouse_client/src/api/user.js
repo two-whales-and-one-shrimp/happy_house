@@ -105,6 +105,13 @@ async function updateUserEmail(userId, userEmail, success, fail) {
   }
 }
 
+async function getUserInfo(userId) {
+  const response = await apiTokenInstance().post(`/user/${userId}`);
+  if (response.status === 200) {
+    return response;
+  }
+}
+
 export {
   signIn,
   signUp,
@@ -112,6 +119,7 @@ export {
   checkEmail,
   checkCode,
   signOut,
+  getUserInfo,
   deleteUser,
   getNewAccessToken,
   updateUserPassword,

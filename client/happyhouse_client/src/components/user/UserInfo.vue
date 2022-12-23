@@ -9,7 +9,7 @@
           <span class="title">아이디</span>
         </v-col>
         <v-col class="d-flex flex-row align-left">
-          <span>
+          <span class="text-lg-h6">
             {{ user.id }}
           </span>
         </v-col>
@@ -46,7 +46,7 @@
         <v-col class="d-flex flex-row align-center" cols="2">
           <span class="title">이메일</span>
         </v-col>
-        <v-col class="d-flex flex-row align-left">
+        <v-col class="d-flex flex-row align-center justify-left">
           <v-text-field
             v-model="user.email"
             v-if="mode.emailModify"
@@ -118,6 +118,7 @@ import {
   checkEmail,
   checkCode,
   updateUserEmail,
+  getUserInfo,
 } from "@/api/user";
 export default {
   data() {
@@ -265,8 +266,11 @@ export default {
       this.mode.emailModify = false;
     },
   },
-  created() {
+  async created() {
     this.user.id = this.getUserId;
+    const response = await getUserInfo(this.user.id);
+    const userData = response.data;
+    this.user.email = userData.userEmail;
   },
   watch: {
     "mode.emailCertification"(newValue) {
