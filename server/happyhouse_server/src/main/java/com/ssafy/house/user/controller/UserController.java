@@ -49,8 +49,17 @@ public class UserController {
   public ResponseEntity<?> signOut(@RequestHeader("X-ACCESS-TOKEN") String token, @PathVariable String userId) {
     if (userService.signOut(userId, token))
       return new ResponseEntity<>(HttpStatus.OK);
-    else 
+    else
       return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @PostMapping("/{userId}")
+  public ResponseEntity<?> getUserInfo(@PathVariable String userId) {
+    UserDto userDto = userService.getUserInfo(userId);
+    if (userDto != null) {
+      return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
+    return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @DeleteMapping("/{userId}")
