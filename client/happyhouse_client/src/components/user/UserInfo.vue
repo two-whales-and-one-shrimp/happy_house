@@ -9,7 +9,7 @@
           <span class="title">아이디</span>
         </v-col>
         <v-col class="d-flex flex-row align-left">
-          <span>
+          <span class="text-lg-h6">
             {{ user.id }}
           </span>
         </v-col>
@@ -25,6 +25,7 @@
             class="title"
             v-model="user.password"
             type="password"
+            :rules="[() => !!user.password || '비밀번호를 입력해주세요']"
           >
           </v-text-field>
         </v-col>
@@ -37,7 +38,13 @@
           >
             수정
           </v-btn>
-          <v-btn v-else text x-large @click="requireChangePassword">
+          <v-btn
+            v-else
+            text
+            x-large
+            @click="requireChangePassword"
+            :disabled="checkPasswordEmpty"
+          >
             저장
           </v-btn>
         </v-col>
@@ -46,11 +53,12 @@
         <v-col class="d-flex flex-row align-center" cols="2">
           <span class="title">이메일</span>
         </v-col>
-        <v-col class="d-flex flex-row align-left">
+        <v-col class="d-flex flex-row align-center justify-left">
           <v-text-field
             v-model="user.email"
             v-if="mode.emailModify"
             class="title"
+            :rules="[() => !!user.email || '이메일을 입력해주세요']"
           >
           </v-text-field>
           <span v-else class="title">{{ user.email }}</span>
@@ -64,7 +72,14 @@
           >
             수정
           </v-btn>
-          <v-btn v-else @click="requireCertifiactionCode" text x-large>
+          <v-btn
+            v-else
+            @click="requireCertifiactionCode"
+            text
+            x-large
+            :disabled="checkEmailEmpty"
+            :rules="[() => !!name || 'This field is required']"
+          >
             인증 번호 요청
           </v-btn>
           <v-dialog
@@ -118,6 +133,7 @@ import {
   checkEmail,
   checkCode,
   updateUserEmail,
+  getUserInfo,
 } from "@/api/user";
 export default {
   data() {
@@ -142,6 +158,12 @@ export default {
   },
   computed: {
     ...mapGetters("userStore", ["getUserId"]),
+    checkPasswordEmpty() {
+      return this.user.password.length === 0;
+    },
+    checkEmailEmpty() {
+      return this.user.email.length === 0;
+    },
   },
   methods: {
     ...mapMutations("userStore", ["REMOVE_USER_INFO"]),
@@ -265,9 +287,13 @@ export default {
       this.mode.emailModify = false;
     },
   },
-  created() {
+  async created() {
     this.user.id = this.getUserId;
+    const response = await getUserInfo(this.user.id);
+    const userData = response.data;
+    this.user.email = userData.userEmail;
   },
+
   watch: {
     "mode.emailCertification"(newValue) {
       if (!newValue) {
