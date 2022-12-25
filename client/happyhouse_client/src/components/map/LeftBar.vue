@@ -29,50 +29,18 @@
       </div>
     </v-row>
     <v-row>
-      <trade-search-list :tradeList="dummyList"></trade-search-list>
+      <trade-search-list :tradeList="aptList"></trade-search-list>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import { getAptInfo } from "@/api/apartment";
 import TradeSearchList from "./TradeSearchList";
 export default {
   data() {
     return {
-      dummyList: [
-        {
-          aptName: "apt1",
-          tradeDate: "2022년 00월 00일",
-          area: "00",
-          tradePrice: "----원",
-          address: "00시 00구 00동",
-          addressCode: "00000000",
-        },
-        {
-          aptName: "apt2",
-          tradeDate: "2022년 00월 00일",
-          area: "00",
-          tradePrice: "----원",
-          address: "00시 00구 00동",
-          addressCode: "00000000",
-        },
-        {
-          aptName: "apt3",
-          tradeDate: "2022년 00월 00일",
-          area: "00",
-          tradePrice: "----원",
-          address: "00시 00구 00동",
-          addressCode: "00000000",
-        },
-        {
-          aptName: "apt4",
-          tradeDate: "2022년 00월 00일",
-          area: "00",
-          tradePrice: "----원",
-          address: "00시 00구 00동",
-          addressCode: "00000000",
-        },
-      ],
+      aptList: [],
       keywordList: [],
       keyword: "",
     };
@@ -81,9 +49,11 @@ export default {
     TradeSearchList,
   },
   methods: {
-    search() {
+    async search() {
       if (this.keyword !== "") {
         this.keywordList.push(this.keyword);
+        this.aptList = await getAptInfo(11110, 201512);
+        console.log(this.aptList);
       }
     },
     addKeyword() {
