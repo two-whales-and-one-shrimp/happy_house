@@ -29,7 +29,8 @@ public class SecurityConfiguration{
         .and()
         .authorizeRequests()
         .antMatchers(HttpMethod.OPTIONS).permitAll() // 브라우저가 보낸 preflight 요청 해결
-        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup", "/user/{userId}", "/user/email", "/user/code", "/user/refresh", "/user/findpassword", "/user/update/*")
+        .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup", "/user/{userId}",
+            "/user/email", "/user/code", "/user/refresh", "/user/findpassword", "/user/update/*", "/map/{keyword}")
         .permitAll()
         .antMatchers("/admin/**").hasRole("admin")
         .antMatchers("/user/signout/{userId}").hasAnyRole("admin", "user")
