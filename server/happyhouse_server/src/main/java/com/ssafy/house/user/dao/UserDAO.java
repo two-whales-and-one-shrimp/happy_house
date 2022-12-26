@@ -3,7 +3,6 @@ package com.ssafy.house.user.dao;
 import java.util.List;
 import java.util.Optional;
 
-import com.ssafy.house.user.data.dto.UserDto;
 import com.ssafy.house.user.data.dto.UserListDto;
 import com.ssafy.house.user.data.entity.User;
 
