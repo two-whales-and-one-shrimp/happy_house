@@ -34,9 +34,11 @@
       <v-col
         ><v-btn to="/user/sign-up" plain text><h4>회원 가입</h4></v-btn></v-col
       >
-      <v-col
-        ><v-btn plain text><h4>비밀번호 찾기</h4></v-btn></v-col
-      >
+      <v-col>
+        <v-btn plain text exact to="/user/find/password">
+          <h4>비밀번호 찾기</h4>
+        </v-btn>
+      </v-col>
     </v-row>
     <v-btn class="mt-4" block tile x-large elevation="0" @click="signIn"
       >로그인</v-btn
