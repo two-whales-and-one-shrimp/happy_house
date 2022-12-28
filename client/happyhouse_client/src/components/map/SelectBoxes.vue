@@ -17,6 +17,7 @@
             :items="monthList"
             label="월 선택"
             solo
+            @change="selectMonth"
           ></v-select>
         </v-col>
       </v-row>
@@ -24,6 +25,7 @@
   </div>
 </template>
 <script>
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -41,8 +43,13 @@ export default {
     });
   },
   methods: {
-    selectYear() {},
-    selectMonth() {},
+    ...mapMutations("searchStore", ["SET_SELECTED_YEAR", "SET_SELECTED_MONTH"]),
+    selectYear() {
+      this.SET_SELECTED_YEAR(this.selectedYear);
+    },
+    selectMonth() {
+      this.SET_SELECTED_MONTH(this.selectedMonth);
+    },
   },
 };
 </script>
