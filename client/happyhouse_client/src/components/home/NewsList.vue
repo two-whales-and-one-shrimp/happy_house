@@ -3,9 +3,14 @@
     <div class="text-lg-h5 mb-5">부동산 관련 뉴스</div>
     <div class="d-flex flex-row justify-space-between">
       <template>
-        <div v-for="(news, index) in newsList" :key="index">
+        <div
+          class="news-container"
+          v-for="(news, index) in newsList"
+          :key="index"
+          @click="changeToNews(news.link)"
+        >
           <img :src="news.imgSrc" />
-          <div>{{ news.title }}</div>
+          <div class="d-flex flex-wrap title-box">{{ news.title }}</div>
         </div>
       </template>
     </div>
@@ -27,6 +32,12 @@ export default {
     this.newsList = await getNews();
     console.log(this.newsList);
   },
+
+  methods: {
+    changeToNews(src) {
+      window.open(src, "_blanck");
+    },
+  },
 };
 </script>
 
@@ -38,5 +49,13 @@ export default {
 img {
   width: 150px;
   height: 150px;
+}
+
+.title-box {
+  width: 150px;
+}
+
+.news-container {
+  cursor: pointer;
 }
 </style>
