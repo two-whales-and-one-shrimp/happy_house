@@ -1,6 +1,7 @@
 <template>
   <div class="margin-top">
     <left-bar></left-bar>
+    <select-boxes></select-boxes>
     <the-kakao-map></the-kakao-map>
   </div>
 </template>
@@ -8,11 +9,13 @@
 <script>
 import LeftBar from "@/components/map/LeftBar";
 import TheKakaoMap from "@/components/map/TheKakaoMap";
+import SelectBoxes from "@/components/map/SelectBoxes";
 
 export default {
   components: {
     LeftBar,
     TheKakaoMap,
+    SelectBoxes,
   },
 };
 </script>
