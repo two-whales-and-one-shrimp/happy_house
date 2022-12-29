@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import userStore from "./modules/user-store";
+import searchStore from "./modules/search-store";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -8,5 +9,5 @@ export default new Vuex.Store({
   getters: {},
   mutations: {},
   actions: {},
-  modules: { userStore },
+  modules: { userStore, searchStore },
 });
