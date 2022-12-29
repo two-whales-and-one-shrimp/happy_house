@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { getAptInfo } from "@/api/apartment";
+import { getAptInfo, kakaoKeywordSearch } from "@/api/apartment";
 import TradeSearchList from "./TradeSearchList";
 export default {
   data() {
@@ -50,11 +50,9 @@ export default {
   },
   methods: {
     async search() {
-      if (this.keyword !== "") {
-        this.keywordList.push(this.keyword);
-        this.aptList = await getAptInfo(11110, 201512);
-        console.log(this.aptList);
-      }
+      const array = await getAptInfo(11110, 201512);
+      await this.searchAptListForMap(array);
+      this.$emit("setAptList", this.aptList);
     },
     addKeyword() {
       this.keywordList.push(this.keyword);
@@ -62,6 +60,30 @@ export default {
     },
     deleteKeyword(index) {
       this.keywordList.splice(index, 1);
+    },
+    async searchAptListForMap(array) {
+      const newAptList = [];
+      for (const apt of array) {
+        const response = await kakaoKeywordSearch(apt.aptName);
+        const aptData = response.data.documents[0];
+        //keyword 검색 결과가 없으면 aptList에서 삭제
+        if (aptData == undefined) {
+          continue;
+        }
+        //카테고리 검사 -> 거래 내역이 아닌 결과는 삭제
+        // const categoryNameSplit = aptData.category_name.split(" > ");
+        // if (categoryNameSplit[0] !== "부동산") {
+        //   this.aptList.remove(apt);
+        //   continue;
+        // }
+
+        const fullAddress = aptData["address_name"];
+
+        apt.fullAddress = fullAddress;
+        apt.latlngObj = { x: parseFloat(aptData.x), y: parseFloat(aptData.y) };
+        newAptList.push(apt);
+      }
+      this.aptList = [...newAptList];
     },
   },
 };

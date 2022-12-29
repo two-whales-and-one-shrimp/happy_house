@@ -4,6 +4,14 @@
 
 <script>
 export default {
+  props: {
+    aptList: Array,
+  },
+  data() {
+    return {
+      markerList: [],
+    };
+  },
   mounted() {
     if (window.kakao && window.kakao.maps) {
       this.initMap();
@@ -25,6 +33,41 @@ export default {
       };
       // eslint-disable-next-line no-undef
       this.map = new kakao.maps.Map(container, options);
+    },
+    makeMarkers() {
+      //기존 마커 다 지우고 시작
+      this.deleteAllMarkers();
+
+      //dummydata
+      for (const apt of this.aptList) {
+        // eslint-disable-next-line no-undef
+        const markerPosition = new kakao.maps.LatLng(
+          apt.latlngObj.y,
+          apt.latlngObj.x
+        );
+        // eslint-disable-next-line no-undef
+        const marker = new kakao.maps.Marker({
+          position: markerPosition,
+        });
+        marker.setMap(this.map);
+        this.markerList.push(marker);
+      }
+    },
+    deleteAllMarkers() {
+      for (const marker of this.markerList) {
+        marker.setMap(null);
+      }
+    },
+    //지도 중심 바꾸기
+    setMapCenter(lat, lng) {
+      // eslint-disable-next-line no-undef
+      const center = new kakao.maps.LatLng(lat, lng);
+      this.map.setCenter(center);
+    },
+  },
+  watch: {
+    aptList: function () {
+      this.makeMarkers();
     },
   },
 };

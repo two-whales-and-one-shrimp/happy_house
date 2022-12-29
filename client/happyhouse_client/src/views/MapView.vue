@@ -1,8 +1,8 @@
 <template>
   <div class="margin-top">
-    <left-bar></left-bar>
+    <left-bar @setAptList="setAptList"></left-bar>
     <select-boxes></select-boxes>
-    <the-kakao-map></the-kakao-map>
+    <the-kakao-map :aptList="aptList"></the-kakao-map>
   </div>
 </template>
 
@@ -16,6 +16,16 @@ export default {
     LeftBar,
     TheKakaoMap,
     SelectBoxes,
+  },
+  data() {
+    return {
+      aptList: [],
+    };
+  },
+  methods: {
+    setAptList(list) {
+      this.aptList = [...list];
+    },
   },
 };
 </script>
