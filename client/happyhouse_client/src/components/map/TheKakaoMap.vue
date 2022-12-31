@@ -50,7 +50,16 @@ export default {
         const marker = new kakao.maps.Marker({
           position: markerPosition,
         });
+        var iwContent = `<div style="padding:3px; text-align:center">${apt.aptName}</div>`;
+        // eslint-disable-next-line no-undef
+        const infowindow = new kakao.maps.InfoWindow({
+          position: markerPosition,
+          content: iwContent,
+        });
+
         marker.setMap(this.map);
+        infowindow.open(this.map, marker);
+
         this.markerList.push(marker);
       }
     },
@@ -90,6 +99,9 @@ export default {
       this.map.setLevel(3);
     },
   },
+  beforeUpdate() {
+    this.deleteAllMarkers();
+  },
   watch: {
     aptList: function () {
       this.makeMarkers();
@@ -105,8 +117,8 @@ export default {
 #map {
   position: fixed;
   left: 400px;
-  width: 100vw;
-  height: 100vh;
+  width: 80vw;
+  height: 90vh;
   border-left: 1px solid #9e9e9e;
   border-top: 1px solid #9e9e9e;
 }
