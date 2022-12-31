@@ -6,6 +6,7 @@
 export default {
   props: {
     aptList: Array,
+    centerAddress: [String, Object],
   },
   data() {
     return {
@@ -20,7 +21,7 @@ export default {
     const script = document.createElement("script");
     // eslint-disable-next-line no-undef
     script.onload = () => kakao.maps.load(this.initMap);
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_MAP_KEY}`;
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_MAP_KEY}&libraries=services`;
     document.head.appendChild(script);
   },
   methods: {
@@ -59,15 +60,42 @@ export default {
       }
     },
     //지도 중심 바꾸기
-    setMapCenter(lat, lng) {
+    async changeMapCenter() {
       // eslint-disable-next-line no-undef
-      const center = new kakao.maps.LatLng(lat, lng);
-      this.map.setCenter(center);
+      let geocoder = new kakao.maps.services.Geocoder();
+      let coords = null;
+
+      if (this.centerAddress.x == undefined) {
+        geocoder.addressSearch(this.centerAddress, (result, status) => {
+          // eslint-disable-next-line no-undef
+          if (status === kakao.maps.services.Status.OK) {
+            // eslint-disable-next-line no-undef
+            coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+            //지도 중심 이동
+            this.map.setCenter(coords);
+            this.map.setLevel(7);
+          }
+        });
+      } else {
+        // eslint-disable-next-line no-undef
+        coords = new kakao.maps.LatLng(
+          this.centerAddress.y,
+          this.centerAddress.x
+        );
+      }
+
+      //지도 중심 이동
+      this.map.setCenter(coords);
+      this.map.setLevel(7);
     },
   },
   watch: {
     aptList: function () {
       this.makeMarkers();
+    },
+    centerAddress: function () {
+      this.changeMapCenter();
     },
   },
 };
