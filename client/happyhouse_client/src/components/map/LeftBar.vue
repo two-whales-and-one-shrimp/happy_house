@@ -29,7 +29,10 @@
       </div>
     </v-row>
     <v-row>
-      <trade-search-list :tradeList="aptList"></trade-search-list>
+      <trade-search-list
+        :tradeList="aptList"
+        @changeMapCenterAddress="emitChangeMapCenter"
+      ></trade-search-list>
     </v-row>
   </v-container>
 </template>
@@ -53,7 +56,7 @@ export default {
       const array = await getAptInfo(11110, 201512);
       await this.searchAptListForMap(array);
       this.$emit("setAptList", this.aptList);
-      this.$emit("changeMapCenterAddress", "서울시 종로구");
+      this.emitChangeMapCenter("서울시 종로구");
     },
     addKeyword() {
       this.keywordList.push(this.keyword);
@@ -77,9 +80,13 @@ export default {
 
         apt.fullAddress = fullAddress;
         apt.latlngObj = { x: parseFloat(aptData.x), y: parseFloat(aptData.y) };
+        apt.toggle = false; //ui toggle을 위한 값
         newAptList.push(apt);
       }
       this.aptList = [...newAptList];
+    },
+    emitChangeMapCenter(value) {
+      this.$emit("changeMapCenterAddress", value);
     },
   },
 };

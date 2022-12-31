@@ -87,7 +87,7 @@ export default {
 
       //지도 중심 이동
       this.map.setCenter(coords);
-      this.map.setLevel(7);
+      this.map.setLevel(3);
     },
   },
   watch: {
