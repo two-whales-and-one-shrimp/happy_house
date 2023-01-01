@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.house.map.data.dto.MapResultDto;
 import com.ssafy.house.map.service.impl.MapServiceImpl;
 
 @RestController
@@ -22,7 +21,16 @@ public class MapController {
 
   @GetMapping("/{keyword}")
   public ResponseEntity<?> getList(@PathVariable String keyword) {
-    HashSet<MapResultDto> list = mapService.getList(keyword);
+    HashSet<String> list = mapService.getList(keyword);
     return new ResponseEntity<>(list, HttpStatus.OK);
+  }
+
+  @GetMapping("guguncode/{keyword}")
+  public ResponseEntity<?> getGugunCode(@PathVariable String keyword) {
+    String gugunCode = mapService.getGugunCode(keyword);
+    if(gugunCode != null)
+      return new ResponseEntity<>(gugunCode, HttpStatus.OK);
+    else 
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

@@ -8,5 +8,8 @@ import com.ssafy.house.map.data.entity.Gugun;
 
 public interface MapRepository extends JpaRepository<Gugun,String>{
   public List<Gugun> findBySidoNameContaining(String sidoName);
+
   public List<Gugun> findByGugunNameContaining(String gugunName);
+
+  public Gugun findBySidoNameAndGugunName(String sidoName, String gugunName);
 }

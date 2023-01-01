@@ -18,6 +18,10 @@
 
 <script>
 import { getKeyword } from "@/api/map.js";
+import { mapMutations, mapActions } from "vuex";
+
+const searchStore = "searchStore";
+
 export default {
   name: "SearchBar",
   data() {
@@ -38,8 +42,19 @@ export default {
     },
   },
   methods: {
-    search() {
-      console.log(this.value);
+    ...mapMutations(searchStore, [
+      "SET_SELECTED_YEAR",
+      "SET_SELECTED_MONTH",
+      "SET_KEYWORD",
+    ]),
+    ...mapActions(searchStore, ["findGugunCode"]),
+
+    async search() {
+      let now = new Date();
+      this.SET_SELECTED_YEAR(now.getFullYear());
+      this.SET_SELECTED_MONTH(now.getMonth() + 1);
+      await this.findGugunCode(this.value);
+      this.$router.push({ name: "map" });
     },
   },
 };
