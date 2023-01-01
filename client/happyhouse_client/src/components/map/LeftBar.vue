@@ -29,13 +29,16 @@
       </div>
     </v-row>
     <v-row>
-      <trade-search-list :tradeList="aptList"></trade-search-list>
+      <trade-search-list
+        :tradeList="aptList"
+        @changeMapCenterAddress="emitChangeMapCenter"
+      ></trade-search-list>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { getAptInfo } from "@/api/apartment";
+import { getAptInfo, kakaoKeywordSearch } from "@/api/apartment";
 import TradeSearchList from "./TradeSearchList";
 export default {
   data() {
@@ -50,11 +53,10 @@ export default {
   },
   methods: {
     async search() {
-      if (this.keyword !== "") {
-        this.keywordList.push(this.keyword);
-        this.aptList = await getAptInfo(11110, 201512);
-        console.log(this.aptList);
-      }
+      const array = await getAptInfo(11110, 201512);
+      await this.searchAptListForMap(array);
+      this.$emit("setAptList", this.aptList);
+      this.emitChangeMapCenter("서울시 종로구");
     },
     addKeyword() {
       this.keywordList.push(this.keyword);
@@ -62,6 +64,29 @@ export default {
     },
     deleteKeyword(index) {
       this.keywordList.splice(index, 1);
+    },
+
+    async searchAptListForMap(array) {
+      const newAptList = [];
+      for (const apt of array) {
+        const response = await kakaoKeywordSearch(apt.aptName);
+        const aptData = response.data.documents[0];
+        //keyword 검색 결과가 없으면 aptList에서 삭제
+        if (aptData == undefined) {
+          continue;
+        }
+
+        const fullAddress = aptData["address_name"];
+
+        apt.fullAddress = fullAddress;
+        apt.latlngObj = { x: parseFloat(aptData.x), y: parseFloat(aptData.y) };
+        apt.toggle = false; //ui toggle을 위한 값
+        newAptList.push(apt);
+      }
+      this.aptList = [...newAptList];
+    },
+    emitChangeMapCenter(value) {
+      this.$emit("changeMapCenterAddress", value);
     },
   },
 };
