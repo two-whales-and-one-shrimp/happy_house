@@ -111,10 +111,15 @@ public class UserServiceImpl implements UserService{
   }
 
   @Override
-  public void findPassword(UserDto userDto) throws Exception {
+  public boolean findPassword(String userId) throws Exception {
+    User user = userDAO.selectUserById(userId);
+    if (user == null) {
+      return false;
+    }
+    String userEmail = user.getUserEmail();
+    
     Random random = new Random();
     StringBuffer key = new StringBuffer();
-
     for (int i = 0; i < 8; i++) {
       int index = random.nextInt(2);
 
@@ -130,9 +135,10 @@ public class UserServiceImpl implements UserService{
 
     String tempPassword = key.toString();
     //임시 비밀번호 전송
-    emailUtil.findPasswordMessage(userDto.getUserEmail(), tempPassword);
+    emailUtil.findPasswordMessage(userEmail, tempPassword);
     //임시 비밀번호 저장
-    userDAO.updateUserPasswordById(userDto.getUserId(), passwordEncoder.encode(tempPassword));
+    userDAO.updateUserPasswordById(userId, passwordEncoder.encode(tempPassword));
+    return true;
   }
 
   @Override

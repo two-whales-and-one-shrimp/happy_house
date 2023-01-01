@@ -112,6 +112,14 @@ async function getUserInfo(userId) {
   }
 }
 
+async function findUserPassword(userId, userEmail) {
+  const response = await apiInstance().post("/user/findpassword", {
+    userId: userId,
+    userEmail: userEmail,
+  });
+  return response;
+}
+
 export {
   signIn,
   signUp,
@@ -124,4 +132,5 @@ export {
   getNewAccessToken,
   updateUserPassword,
   updateUserEmail,
+  findUserPassword,
 };

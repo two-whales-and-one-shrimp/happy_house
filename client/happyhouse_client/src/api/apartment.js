@@ -22,4 +22,18 @@ async function getAptInfo(dongCode, date) {
   return aptList;
 }
 
-export { getAptInfo };
+async function kakaoKeywordSearch(aptName) {
+  const url = "https://dapi.kakao.com/v2/local/search/keyword.json";
+  const params = `page=1
+  &size=1
+  &sort=accuracy
+  &query=${aptName}`;
+  const response = await axios.get(`${url}?${params}`, {
+    headers: {
+      Authorization: `${process.env.VUE_APP_KAKAP_KEYWORD_SEARCH_REST_KEY}`,
+    },
+  });
+  return response;
+}
+
+export { getAptInfo, kakaoKeywordSearch };

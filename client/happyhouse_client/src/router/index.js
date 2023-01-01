@@ -9,6 +9,7 @@ import AdminView from "@/views/AdminView";
 import UserInfo from "@/components/user/UserInfo";
 import UserSignIn from "@/components/user/UserSignIn";
 import UserSignUp from "@/components/user/UserSignUp";
+import UserFindPassword from "@/components/user/UserFindPassword";
 
 import store from "@/store";
 
@@ -57,6 +58,11 @@ const routes = [
         path: "sign-up",
         name: "signUp",
         component: UserSignUp,
+      },
+      {
+        path: "find/password",
+        name: "findPassword",
+        component: UserFindPassword,
       },
     ],
   },
