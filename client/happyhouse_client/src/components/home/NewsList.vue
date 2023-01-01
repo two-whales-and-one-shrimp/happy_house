@@ -30,7 +30,6 @@ export default {
 
   async created() {
     this.newsList = await getNews();
-    console.log(this.newsList);
   },
 
   methods: {
