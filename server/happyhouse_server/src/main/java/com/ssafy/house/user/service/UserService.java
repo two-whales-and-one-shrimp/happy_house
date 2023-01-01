@@ -25,7 +25,7 @@ public interface UserService {
 
   boolean upgradeUser(String userId) throws Exception;
   
-  void findPassword(UserDto userDto) throws Exception;
+  boolean findPassword(String userId) throws Exception;
 
   void updateUserPassword(UserDto userDto) throws Exception;
 
