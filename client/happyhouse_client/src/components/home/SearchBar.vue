@@ -12,7 +12,6 @@
       hide-no-data
       return-object
       @keyup.enter="search"
-      @keyup.delete="update"
     ></v-combobox>
   </div>
 </template>
@@ -26,7 +25,6 @@ export default {
       value: "",
       keyword: null,
       keywordList: [],
-      canSearch: false,
     };
   },
   computed: {
@@ -38,21 +36,10 @@ export default {
     async keyword(val) {
       this.keywordList = await getKeyword(val);
     },
-    // search() {
-    //   console.log("검색");
-    // },
   },
   methods: {
     search() {
-      if (this.canSearch) {
-        console.log("페이지 변경");
-      }
-      this.canSearch = !this.canSearch;
       console.log(this.value);
-    },
-
-    update() {
-      this.canSearch = false;
     },
   },
 };
