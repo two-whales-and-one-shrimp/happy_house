@@ -43,6 +43,7 @@ export default {
   computed: {
     getKeywordList() {
       return this.keywordList;
+    },
   },
   watch: {
     async keyword(val) {
@@ -50,7 +51,7 @@ export default {
     },
   },
   methods: {
- // search2 재희 코드, search() 호균 코드
+    // search2 재희 코드, search() 호균 코드
     async search2() {
       const array = await getAptInfo(11110, 201512);
       await this.searchAptListForMap(array);
