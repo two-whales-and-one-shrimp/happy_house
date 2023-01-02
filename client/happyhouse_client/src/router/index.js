@@ -26,6 +26,27 @@ const avoidDuplicateSignIns = async (to, from, next) => {
   }
 };
 
+const needToSignIn = async (to, from, next) => {
+  const userId = store.getters["userStore/getUserId"];
+
+  if (userId != null) {
+    next();
+  } else {
+    next(from);
+  }
+};
+
+const needToAdmin = async (to, from, next) => {
+  const userId = store.getters["userStore/getUserId"];
+  const isAdmin = store.getters["userStore/getIsAdmin"];
+
+  if (userId != null && isAdmin == true) {
+    next();
+  } else {
+    next(from);
+  }
+};
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -37,6 +58,7 @@ const routes = [
   {
     path: "/map",
     name: "map",
+    beforeEnter: needToSignIn,
     component: MapView,
   },
   {
@@ -46,6 +68,7 @@ const routes = [
       {
         path: "info",
         name: "userinfo",
+        beforeEnter: needToSignIn,
         component: UserInfo,
       },
       {
@@ -69,6 +92,7 @@ const routes = [
   {
     path: "/admin",
     name: "admin",
+    beforeEnter: needToAdmin,
     component: AdminView,
   },
 ];
