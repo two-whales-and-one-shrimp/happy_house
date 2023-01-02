@@ -30,10 +30,12 @@ public class SecurityConfiguration{
         .authorizeRequests()
         .antMatchers(HttpMethod.OPTIONS).permitAll() // 브라우저가 보낸 preflight 요청 해결
         .antMatchers("/", "/css/**", "/images/**", "/js/**", "/user/signin", "/user/signup", "/user/{userId}",
-            "/user/email", "/user/code", "/user/refresh", "/user/findpassword", "/user/update/*", "/map/{keyword}")
+            "/user/email", "/user/code", "/user/refresh", "/user/findpassword")
         .permitAll()
+        .antMatchers(HttpMethod.DELETE, "/user/{userId}").hasAnyRole("admin","user")
+        .antMatchers(HttpMethod.POST, "/user/{userId}", "/user/update/*").hasAnyRole("admin", "user")
         .antMatchers("/admin/**").hasRole("admin")
-        .antMatchers("/user/signout/{userId}").hasAnyRole("admin", "user")
+        .antMatchers("/user/signout/{userId}", "/map/**").hasAnyRole("admin", "user")
         .and()
         .addFilterBefore(new JWTAuthenticatioFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(new JWTExceptionFilter(), JWTAuthenticatioFilter.class);
