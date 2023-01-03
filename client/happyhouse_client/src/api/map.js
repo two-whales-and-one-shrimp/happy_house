@@ -17,4 +17,16 @@ async function getKeyword(keyword) {
   }
 }
 
-export { getKeyword };
+async function getGugunCode(keyword) {
+  try {
+    let response = await api.get(`/map/guguncode/${keyword}`);
+    if (response.status == 200) {
+      let gugunCode = response.data;
+      return gugunCode;
+    }
+  } catch {
+    return;
+  }
+}
+
+export { getKeyword, getGugunCode };

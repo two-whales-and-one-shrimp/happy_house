@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       markerList: [],
+      infoList: [],
     };
   },
   mounted() {
@@ -60,11 +61,15 @@ export default {
         infowindow.open(this.map, marker);
 
         this.markerList.push(marker);
+        this.infoList.push(infowindow);
       }
     },
     deleteAllMarkers() {
       for (const marker of this.markerList) {
         marker.setMap(null);
+      }
+      for (const infowindow of this.infoList) {
+        infowindow.close();
       }
     },
     //지도 중심 바꾸기
@@ -73,6 +78,7 @@ export default {
       let coords = null;
 
       if (this.centerAddress.x == undefined) {
+        console.log(this.centerAddress);
         geocoder.addressSearch(this.centerAddress, (result, status) => {
           if (status === kakao.maps.services.Status.OK) {
             coords = new kakao.maps.LatLng(result[0].y, result[0].x);
@@ -83,6 +89,7 @@ export default {
           }
         });
       } else {
+        console.log(this.centerAddress);
         coords = new kakao.maps.LatLng(
           this.centerAddress.y,
           this.centerAddress.x

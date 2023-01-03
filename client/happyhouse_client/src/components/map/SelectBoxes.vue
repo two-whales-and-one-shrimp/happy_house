@@ -25,13 +25,16 @@
   </div>
 </template>
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
+
+const searchStore = "searchStore";
+
 export default {
   data() {
     return {
       yearList: [],
       selectedYear: null,
-      monthList: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      monthList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       selectedMonth: null,
     };
   },
@@ -41,9 +44,14 @@ export default {
     this.yearList = Array.from({ length: 20 }, (_, i) => {
       return this.nowYear - i;
     });
+    this.selectedYear = this.getSelectedYear;
+    this.selectedMonth = this.getSelectedMonth;
+  },
+  computed: {
+    ...mapGetters(searchStore, ["getSelectedYear", "getSelectedMonth"]),
   },
   methods: {
-    ...mapMutations("searchStore", ["SET_SELECTED_YEAR", "SET_SELECTED_MONTH"]),
+    ...mapMutations(searchStore, ["SET_SELECTED_YEAR", "SET_SELECTED_MONTH"]),
     selectYear() {
       this.SET_SELECTED_YEAR(this.selectedYear);
     },

@@ -25,8 +25,12 @@
 
 <script>
 import { getKeyword } from "@/api/map.js";
-import { getAptInfo, kakaoKeywordSearch } from "@/api/apartment";
+import { getAptInfo, kakaoAddressSearch } from "@/api/apartment";
+import { mapGetters, mapActions } from "vuex";
 import TradeSearchList from "./TradeSearchList";
+
+const searchStore = "searchStore";
+
 export default {
   data() {
     return {
@@ -40,7 +44,18 @@ export default {
     TradeSearchList,
   },
 
+  async created() {
+    this.value = this.getKeyword;
+    await this.setList();
+  },
+
   computed: {
+    ...mapGetters(searchStore, [
+      "getSelectedYear",
+      "getSelectedMonth",
+      "getGugunCode",
+      "getKeyword",
+    ]),
     getKeywordList() {
       return this.keywordList;
     },
@@ -51,22 +66,33 @@ export default {
     },
   },
   methods: {
-    // search2 재희 코드, search() 호균 코드
-    async search2() {
-      const array = await getAptInfo(11110, 201512);
+    ...mapActions(searchStore, ["findGugunCode"]),
+
+    async search() {
+      await this.findGugunCode(this.value);
+      await this.setList();
+    },
+
+    async setList() {
+      let date =
+        "" + this.getSelectedYear + ("0" + this.getSelectedMonth).slice(-2);
+      console.log(this.getGugunCode + " " + date);
+      const array = await getAptInfo(this.getGugunCode, date);
       await this.searchAptListForMap(array);
       this.$emit("setAptList", this.aptList);
-      this.emitChangeMapCenter("서울시 종로구");
-    },
-    async search() {
-      this.aptList = await getAptInfo(11110, 201512);
-      console.log(this.value);
+      this.emitChangeMapCenter(this.getKeyword);
     },
 
     async searchAptListForMap(array) {
       const newAptList = [];
       for (const apt of array) {
-        const response = await kakaoKeywordSearch(apt.aptName);
+        /*
+         * keyword 검색을 하면 같은 아파트 이름의 다른 지역이 나온다.
+         * 좌표 검색을 그래서 주소 기반 검색으로 변경했다.
+         */
+        const response = await kakaoAddressSearch(
+          this.getKeyword + apt.address
+        );
         const aptData = response.data.documents[0];
         //keyword 검색 결과가 없으면 aptList에서 삭제
         if (aptData == undefined) {
