@@ -1,6 +1,6 @@
-import { apiInstance } from ".";
+import { apiTokenInstance } from ".";
 
-const api = apiInstance();
+const api = apiTokenInstance();
 
 async function getKeyword(keyword) {
   try {
