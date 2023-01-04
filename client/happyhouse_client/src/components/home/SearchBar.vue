@@ -54,7 +54,7 @@ export default {
       this.SET_SELECTED_YEAR(now.getFullYear());
       this.SET_SELECTED_MONTH(now.getMonth() + 1);
       await this.findGugunCode(this.value);
-      this.$router.push({ name: "map" });
+      this.$router.push({ name: "map", centerAddress: this.keyword });
     },
   },
 };

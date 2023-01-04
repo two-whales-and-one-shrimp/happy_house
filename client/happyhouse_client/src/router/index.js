@@ -60,6 +60,7 @@ const routes = [
     name: "map",
     beforeEnter: needToSignIn,
     component: MapView,
+    props: true,
   },
   {
     path: "/user",
